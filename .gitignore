@@ -1,0 +1,5 @@
+secrets
+*.csv
+*.json
+log_record*.txt
+*.pyc
