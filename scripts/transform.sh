@@ -1,5 +1,6 @@
 #!/bin/bash
 
 . /opt/env/bin/activate 
-cd /code/processing/transform
+cd /code/transform/processing
+
 python3 transform.py

@@ -4,8 +4,8 @@ import re
 
 
 def transform_company():
-    # vl24h = open('/code/vieclam24h_scraper/data/company.json', 'r')
-    vl24h = open('./vieclam24h_scraper/data/company.json', 'r')
+    # vl24h = open('/code/data_pipeline/extract/vieclam24h_scraper/data/company.json', 'r')
+    vl24h = open('./data_pipeline/extract/vieclam24h_scraper/data/company.json', 'r')
     vl24h = json.load(vl24h)
 
     transform_company = []
@@ -23,8 +23,8 @@ def transform_company():
     # transform_vl24h_file = open('./processing/staging/company.json', 'w')
     # json.dump(transform_company, transform_vl24h_file, indent=4)
 
-    # vlt = open('/code/vieclamtot_scraper/data/company.json', 'r')
-    vlt = open('./vieclamtot_scraper/data/company.json', 'r')
+    # vlt = open('/code/data_pipeline/extract/vieclamtot_scraper/data/company.json', 'r')
+    vlt = open('./data_pipeline/extract/vieclamtot_scraper/data/company.json', 'r')
     vlt = json.load(vlt)
 
     for i in range(len(vlt)):
@@ -44,15 +44,15 @@ def transform_company():
 
         transform_company.append(temp_item)
 
-    # transform_vlt_file = open('/code/processing/staging/company/company.json', 'w')
-    transform_vlt_file = open('./processing/staging/company/company.json', 'w')
+    # transform_vlt_file = open('/code/data_pipeline/transform/staging/company/company.json', 'w')
+    transform_vlt_file = open('./data_pipeline/transform/staging/company/company.json', 'w')
     json.dump(transform_company, transform_vlt_file, indent=4)
 
 
 def transform_job():
     # t = 1
-    # vl24h = open('/code/vieclam24h_scraper/data/job.json', 'r')
-    vl24h = open('./vieclam24h_scraper/data/job.json', 'r')
+    # vl24h = open('/code/data_pipeline/extract/vieclam24h_scraper/data/job.json', 'r')
+    vl24h = open('./data_pipeline/extract/vieclam24h_scraper/data/job.json', 'r')
     vl24h = json.load(vl24h)
 
     transform_job = []
@@ -79,19 +79,16 @@ def transform_job():
             transform_job.append(temp_item)
             # if t == 1:
             #     k = sorted(temp_item.keys())
-                
-            
+                  
         except Exception as e:
             # print(e)
             continue
-        
-        
 
     # transform_vl24h_file = open('./processing/staging/company.json', 'w')
     # json.dump(transform_company, transform_vl24h_file, indent=4)
 
-    # vlt = open('/code/vieclamtot_scraper/data/job.json', 'r')
-    vlt = open('./vieclamtot_scraper/data/job.json', 'r')
+    # vlt = open('/code/data_pipeline/extract/vieclamtot_scraper/data/job.json', 'r')
+    vlt = open('./data_pipeline/extract/vieclamtot_scraper/data/job.json', 'r')
     vlt = json.load(vlt)
 
     for i in range(len(vlt)):
@@ -127,18 +124,12 @@ def transform_job():
 
             transform_job.append(temp_item)
 
-            # if t == 1:
-            #     print(k == sorted(temp_item.keys()))
-                # t +=1
-
         except Exception as e:
             print(e)
             continue
 
-    print(transform_job[8614])
-
-    # transform_vlt_file = open('/code/processing/staging/job/job.json', 'w')
-    transform_vlt_file = open('./processing/staging/job/job.json', 'w')
+    # transform_vlt_file = open('/code/data_pipeline/transform/staging/job/job.json', 'w')
+    transform_vlt_file = open('./data_pipeline/transform/staging/job/job.json', 'w')
     json.dump(transform_job, transform_vlt_file, indent=4)
 
 

@@ -1,9 +1,5 @@
-from ..ultis import *
 from vieclam24h_scraper.items import *
-from scrapy.loader import ItemLoader
-import logging
-from scrapy.utils.log import configure_logging
-from datetime import date
+from utils.utils import *
 
 
 class Vieclam24hSpider(scrapy.Spider):
@@ -11,11 +7,10 @@ class Vieclam24hSpider(scrapy.Spider):
     name = 'vieclam24h'
     configure_logging(install_root_handler=False, )
     logging.basicConfig(
-        handlers=[logging.FileHandler(filename='./logging/log_records_{}.txt'.format(str(int(time.mktime(date.today().timetuple())))), 
-                                                 encoding='utf-8', mode='a+')],
-                    format="%(asctime)s %(name)s:%(levelname)s:%(message)s", 
-                    datefmt="%F %A %T", 
-                    level=logging.INFO
+        handlers=[logging.FileHandler(filename='./logging/log_records_{}.txt'.format(str(int(time.mktime(date.today().timetuple())))), encoding='utf-8', mode='a+')],
+        format="%(asctime)s %(name)s:%(levelname)s:%(message)s",
+        datefmt="%F %A %T",
+        level=logging.INFO
     )
 
     def __init__(self, end_page='20', **kwargs):
@@ -28,7 +23,7 @@ class Vieclam24hSpider(scrapy.Spider):
         super().__init__(**kwargs)
 
     def start_requests(self):
-        for t in range(113, 181): #181
+        for t in range(113, 181):
             for p in range(self.end_page):
                 yield scrapy.Request(self.url + "?field_ids[]=" + str(t) + "&page=" + str(p), callback=self.parse_links, meta={
                     "download_timeout": 10,
@@ -48,7 +43,6 @@ class Vieclam24hSpider(scrapy.Spider):
             link = self.preprocess(link)
             yield scrapy.Request(link, callback=self._get_javascript_data, meta=response.meta)
             
-
     def _get_javascript_data(self, response):
 
         data = {}
@@ -65,7 +59,7 @@ class Vieclam24hSpider(scrapy.Spider):
 
         # if self.first_item:
         self.metadata = data['props']['initialState']['api']['initCommon']['data']
-            # self.first_item = False
+        # self.first_item = False
 
         # return job_detail, employer_detail, parameters, data
 
@@ -107,7 +101,7 @@ class Vieclam24hSpider(scrapy.Spider):
 
             return jobItem.load_item()
         except Exception as e:
-            with open('./vieclam24h_scraper/error/error_url.txt', 'a') as f:
+            with open('./error/error_job_url_{}.txt'.format(str(int(time.mktime(date.today().timetuple())))), 'a') as f:
                 f.write(str(response.url) + ', ' + str(e) + '\n')
                 f.close()
 
@@ -123,6 +117,6 @@ class Vieclam24hSpider(scrapy.Spider):
 
             return companyItem.load_item()
         except Exception as e:
-            with open('./vieclam24h_scraper/error/error_url.txt', 'a') as f:
+            with open('./error/error_company_url_{}.txt'.format(str(int(time.mktime(date.today().timetuple())))), 'a') as f:
                 f.write(str(response.url) + ', ' + str(e) + '\n')
                 f.close()

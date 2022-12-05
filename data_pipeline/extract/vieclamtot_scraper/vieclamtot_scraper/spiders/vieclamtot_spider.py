@@ -1,11 +1,6 @@
 # from ..ultis import *
 from vieclamtot_scraper.items import *
-from scrapy.loader import ItemLoader
-import logging
-from scrapy.utils.log import configure_logging
-from datetime import date
-import time
-import json
+from utils.utils import *
 
 
 class VieclamtotlinksSpider(scrapy.Spider):
@@ -14,18 +9,16 @@ class VieclamtotlinksSpider(scrapy.Spider):
 
     configure_logging(install_root_handler=False, )
     logging.basicConfig(
-        handlers=[logging.FileHandler(filename='./logging/log_records_{}.txt'.format(str(int(time.mktime(date.today().timetuple())))), 
-                                                 encoding='utf-8', mode='a+')],
-                    format="%(asctime)s %(name)s:%(levelname)s:%(message)s", 
-                    datefmt="%F %A %T", 
-                    level=logging.INFO
+        handlers=[logging.FileHandler(filename='./logging/log_records_{}.txt'.format(str(int(time.mktime(date.today().timetuple())))), encoding='utf-8', mode='a+')],
+        format="%(asctime)s %(name)s:%(levelname)s:%(message)s",
+        datefmt="%F %A %T",
+        level=logging.INFO
     )
     # Lấy kết nối tổng để đảm bảo chỉ có 1 connection đến PostgreSQL, tránh được việc quá tải nhiều yêu cầu truy xuất khi quét đa luồng
     # global one_connection
     # connection = one_connection
     # cursor = connection.cursor()
     
-
     def __init__(self, end_page='10', **kwargs):
 
         self.found = True
@@ -41,14 +34,13 @@ class VieclamtotlinksSpider(scrapy.Spider):
 
     def start_requests(self):
 
-        for t in self.get_id_list(): #50
+        for t in self.get_id_list(): 
             for p in range(self.end_page):
                 if self.found:
-                    
                     yield scrapy.Request(self.url + "-sdjt" + str(t) + "?&page=" + str(p) + "&sp=0", callback=self.parse_links, meta={
-                    "download_timeout": 10,
-                    "max_retry_time": 1,
-                    'id': t
+                        "download_timeout": 10,
+                        "max_retry_time": 1,
+                        'id': t
                     })
                     
                 else:
@@ -59,10 +51,8 @@ class VieclamtotlinksSpider(scrapy.Spider):
         # with open('../vieclamtot_scraper/self.data/sample_{}_page.json'.format(self.end_page), 'w') as file:
         #     json.dump(self.self.data, file, indent = 4)
 
-            
     def preprocess(self, link):
         return urljoin(self.url, link)
-
 
     def parse_links(self, response):
 
@@ -78,7 +68,7 @@ class VieclamtotlinksSpider(scrapy.Spider):
         # f.close()
         self.found = True
 
-        links =  response.xpath('//a[contains(@class, "AdItem_adItem")]/@href').getall()
+        links = response.xpath('//a[contains(@class, "AdItem_adItem")]/@href').getall()
 
         # print(links)
         
@@ -88,7 +78,6 @@ class VieclamtotlinksSpider(scrapy.Spider):
                 link = self.preprocess(link)
                 yield scrapy.Request(link, callback=self._get_javascript_data, meta=response.meta)
 
-        
     def _get_javascript_data(self, response):
 
         all_data = {}
@@ -101,7 +90,6 @@ class VieclamtotlinksSpider(scrapy.Spider):
         
         yield self.parse_job(response)
         yield self.parse_company(response)
-
 
     def parse_job(self, response):
         try:
@@ -129,8 +117,8 @@ class VieclamtotlinksSpider(scrapy.Spider):
             jobItem.add_value("contract_type", str(self.parameters["contract_type"]["value"]))
             jobItem.add_value("job_type", str(self.parameters["job_type"]["value"]))
             jobItem.add_value("preferred_education", str(self.parameters.get("preferred_education", {}).get("value")))
-            jobItem.add_value("preferred_gender", str(self.parameters.get("preferred_gender",{}).get("value")))
-            jobItem.add_value("preferred_working_experience", str(self.parameters.get("preferred_working_experience",{}).get("value")))
+            jobItem.add_value("preferred_gender", str(self.parameters.get("preferred_gender", {}).get("value")))
+            jobItem.add_value("preferred_working_experience", str(self.parameters.get("preferred_working_experience", {}).get("value")))
 
             jobItem.add_value("url", response.url)
             now = time.strftime(r"%d/%m/%Y %H:%M:%S", time.localtime())
@@ -140,10 +128,9 @@ class VieclamtotlinksSpider(scrapy.Spider):
             return jobItem.load_item()
         
         except Exception as e:
-            with open('./vieclamtot_scraper/error/error_url.txt', 'a') as f:
+            with open('./error/error_job_url_{}.txt'.format(str(int(time.mktime(date.today().timetuple())))), 'a') as f:
                 f.write(str(response.url) + ', ' + str(e) + '\n')
                 f.close()
-        
         
         # try:
         #     opt = Options()
@@ -163,13 +150,6 @@ class VieclamtotlinksSpider(scrapy.Spider):
         #     jobItem.add_value("phone", ''
         #     print(e)
 
-        
-
-
-    # def save_num_post(self):
-        
-        # save_statistic(self.time_now, self.crawled_num_post, self.connection)
-
     def parse_company(self, response):
         try:
 
@@ -184,6 +164,6 @@ class VieclamtotlinksSpider(scrapy.Spider):
 
             return companyItem.load_item()
         except Exception as e:
-            with open('./vieclamtot_scraper/error/error_url.txt', 'a') as f:
+            with open('./error/error_company_url_{}.txt'.format(str(int(time.mktime(date.today().timetuple())))), 'a') as f:
                 f.write(str(response.url) + ', ' + str(e) + '\n')
                 f.close()

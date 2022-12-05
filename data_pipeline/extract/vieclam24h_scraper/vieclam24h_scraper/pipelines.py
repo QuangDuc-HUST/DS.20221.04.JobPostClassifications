@@ -71,29 +71,27 @@ class Vieclam24HScraperPipeline:
 
         try:
             item['gender'] = self.gender[int(item['gender']) - 1]
-        except:
+        except Exception as e:
+            print(e)
             item['gender'] = ''
 
         try:
             item['education_requirements'] = self.education[item['education_requirements'] - 1]
-        except:
-            # print(self.education)
-            # print(item['education_requirements'])
-            # print(item['url'])
+        except Exception as e:
+            print(e)
             item['education_requirements'] = ''
 
         try:
             item['experience_requirements'] = self.experience[int(item['experience_requirements']) - 1]
-        except:
-            # print(self.experience)
-            # print(item['experience_requirements'])
-            # print(item['url'])
+        except Exception as e:
+            print(e)
             item['experience_requirements'] = ''
         
         try:
             item['contract_type'] = self.working_method[int(item['contract_type']) - 1]
-        except:
-            item['contract_type'] =''
+        except Exception as e:
+            print(e)
+            item['contract_type'] = ''
 
         # line = json.dumps(ItemAdapter(item).asdict()) + ",\n"
         # self.file.write(line)
@@ -108,7 +106,8 @@ class Vieclam24HScraperPipeline:
         item['province'] = self.provinces[item['province']]
         try:
             adr = item['address']
-        except:
+        except Exception as e:
+            print(e)
             item['address'] = ''
 
         if item['coordinate'].replace('None', '').replace(', ', '').strip() == '':
@@ -166,6 +165,7 @@ class DuplicatesPipeline:
     def open_spider(self, spider):
         # print('---------- Opening Duplicate Pipeline ----------')
         pass
+       
     def close_spider(self, spider):
         # print('---------- Closing Dupilicate Pipeline ----------')
         pass

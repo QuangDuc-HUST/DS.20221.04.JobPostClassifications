@@ -17,11 +17,12 @@ base = Base(api_key=api_key, base_id=base_id)
 def load_job():
 
     start = time.time()
-    job_data = json.load(open('./processing/staging/job/job.json', 'r'))
+    # job_data = json.load(open('/code/data_pipeline/transform/staging/job/job.json', 'r'))
+    job_data = json.load(open('./data_pipeline/transform/staging/job/job.json', 'r'))
     table_name = config.get_airtable_job_table()
-    print(table_name)
+    table = Table(api_key=api_key, base_id=base_id, table_name=table_name)
 
-    ## Get sample file for initialization in airtable
+    # Get sample file for initialization in airtable
 
     # x = pd.DataFrame(job_data)
     # sample = x.iloc[:5]
@@ -33,10 +34,10 @@ def load_job():
     # sample = sample[new_cols]
     # sample.to_csv('./sample_job.csv', index=False)
 
-    ## Insert
-    # table.batch_create(table_name, job_data)
+    # Insert
+    table.batch_create(table_name, job_data)
 
-    ## Retrieve    
+    # Retrieve    
     # jobs = base.all(table_name=table_name)
     # job_df = pd.DataFrame(jobs)
     # job_df.to_csv('./sample_select_job.csv')
@@ -46,24 +47,27 @@ def load_job():
     end = time.time()
     print(end - start)
 
+
 load_job()
+
 
 def load_company():
 
     start = time.time()
-    company_data = json.load(open('./processing/staging/company/company.json', 'r'))
+    # company_data = json.load(open('/code/data_pipeline/transform/staging/company/company.json', 'r'))
+    company_data = json.load(open('./data_pipeline/transform/staging/company/company.json', 'r'))
     table_name = config.get_airtable_company_table()
     table = Table(api_key=api_key, base_id=base_id, table_name=table_name)
 
-    ## Get sample file for initialization in airtable
+    # Get sample file for initialization in airtable
     # x = pd.DataFrame(company_data)
     # sample = x.iloc[:5]
     # sample.to_csv('./sample_company.csv', index=False)
 
-    ## Insert
-    # table.batch_create('company', company_data)
+    # Insert
+    table.batch_create('company', company_data)
 
-    ## Retrieve
+    # Retrieve
     # companies = table.all(table_name='company')
     # print(len(companies))
     

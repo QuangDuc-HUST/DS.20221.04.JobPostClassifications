@@ -20,13 +20,16 @@ def unix_to_human_time(text: str):
 def remove_nbps(text: str):
     return text.replace(u'\xa0', u' ').replace(r'&nbsp;', ' ')
 
+
 def process_none_value(text):
-    return '' if text == None else text
+    return '' if text is None else text
+
 
 def process_num(num):
     if num is None:
         return 0
     return num
+
 
 class TakeFirst1:
     def __call__(self, values):
@@ -160,5 +163,4 @@ class Vieclam24HScraperCompanyItem(scrapy.Item):
 
     def __str__(self):
         return ""
-
 

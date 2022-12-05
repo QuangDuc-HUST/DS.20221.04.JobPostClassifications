@@ -90,6 +90,7 @@ class DuplicatesPipeline:
     def open_spider(self, spider):
         # print('---------- Opening Duplicate Pipeline ----------')
         pass
+    
     def close_spider(self, spider):
         # print('---------- Closing Dupilicate Pipeline ----------')
         pass
