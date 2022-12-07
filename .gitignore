@@ -3,3 +3,5 @@ secrets
 *.json
 log_record*.txt
 *.pyc
+
+!configuration/*.json
