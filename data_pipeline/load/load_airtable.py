@@ -20,7 +20,6 @@ def load_job():
     # job_data = json.load(open('/code/data_pipeline/transform/staging/job/job.json', 'r'))
     job_data = json.load(open('./data_pipeline/transform/staging/job/job.json', 'r'))
     table_name = config.get_airtable_job_table()
-    table = Table(api_key=api_key, base_id=base_id, table_name=table_name)
 
     # Get sample file for initialization in airtable
 
@@ -35,16 +34,16 @@ def load_job():
     # sample.to_csv('./sample_job.csv', index=False)
 
     # Insert
-    table.batch_create(table_name, job_data)
+    base.batch_create(table_name=table_name, records=job_data)
 
     # Retrieve    
     # jobs = base.all(table_name=table_name)
     # job_df = pd.DataFrame(jobs)
     # job_df.to_csv('./sample_select_job.csv')
-    # print(job_df.head())
-
     # print(len(jobs))
+
     end = time.time()
+
     print(end - start)
 
 
@@ -57,7 +56,6 @@ def load_company():
     # company_data = json.load(open('/code/data_pipeline/transform/staging/company/company.json', 'r'))
     company_data = json.load(open('./data_pipeline/transform/staging/company/company.json', 'r'))
     table_name = config.get_airtable_company_table()
-    table = Table(api_key=api_key, base_id=base_id, table_name=table_name)
 
     # Get sample file for initialization in airtable
     # x = pd.DataFrame(company_data)
@@ -65,11 +63,12 @@ def load_company():
     # sample.to_csv('./sample_company.csv', index=False)
 
     # Insert
-    table.batch_create('company', company_data)
+    base.batch_create(table_name=table_name, records=company_data)
 
     # Retrieve
-    # companies = table.all(table_name='company')
+    # companies = table.all(table_name=table_name)
     # print(len(companies))
     
     end = time.time()
+    
     print(end - start)
