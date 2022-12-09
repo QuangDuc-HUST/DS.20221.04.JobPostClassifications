@@ -2,7 +2,8 @@
 
 for i in vieclamtot vieclam24h
 do
-    cd $home_dir/$i_scraper/
+    echo /content/DS.20221.04.JobPostClassifications/data_pipeline/extract/"$i"_scraper/
+    cd /content/DS.20221.04.JobPostClassifications/data_pipeline/extract/"$i"_scraper/
     scrapy crawl $i
     echo "Finished crawling $i"
 done
