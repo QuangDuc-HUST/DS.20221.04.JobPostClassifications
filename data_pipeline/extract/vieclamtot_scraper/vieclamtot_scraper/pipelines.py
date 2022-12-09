@@ -10,9 +10,66 @@ from .items import *
 from itemadapter import ItemAdapter
 from scrapy.exceptions import DropItem
 import re
+import sys
+sys.path.append('../../..')
+from data_pipeline.transform.processing.transform_colab import *
+from data_pipeline.load.load_airtable import *
+from data_pipeline.load.load_airtable_colab import *
+from data_pipeline.transform.processing.transformed_item import *
+
+class VieclamtotScraperTransformPipeline:
+
+    def process_item(self, item, spider):
+        if isinstance(item, VieclamtotJobScraperItem):
+            try:
+                return TransformedScraperJobItem(transform_vlt_job(item))
+            except Exception as e:
+                print(e)
+            
+        else:
+            try:
+                return TransformedScraperCompanyItem(transform_vlt_company(item))
+            except Exception as e:
+                print(e)
+
+class VieclamtotScraperLoadPipeline:
+
+    def open_spider(self, spider):
+        self.n_job = 0
+        self.n_company = 0
+
+        self.job = []
+        self.company = []
+        self.base = base
+
+    def process_item(self, item, spider):
+
+        if isinstance(item, TransformedScraperJobItem):
+            self.n_job += 1
+            if self.n_job == 10:
+                load_job(self.job, base)
+                self.n_job = 0
+                self.job = []
+            else:
+                self.job.append(dict(item))
+            
+        else:
+            self.n_company += 1
+            if self.n_company == 10:
+                load_company(self.company, base)
+                self.n_company = 0
+                self.company = []
+            else:
+                self.company.append(dict(item))
+    
+    def close_spider(self, spider):
+        if len(self.job) != 0:
+            load_job(self.job, base)
+        if len(self.company) != 0:
+            load_company(self.company, base)
 
 
-class VieclamtotScraperPipeline:
+class VieclamtotScraperPreprocessPipeline:
 
     def __init__(self) -> None:
         self.first_item = True
@@ -20,22 +77,25 @@ class VieclamtotScraperPipeline:
         self.data_job = []
         self.data_company = []
 
-    def open_spider(self, spider):
+    # def open_spider(self, spider):
+    #     self.start = time.time()
         # print('---------- Opening Main Pipeline ----------')
-        self.file_job = open('../vieclamtot_scraper/data/job.json', 'w')
+        # self.file_job = open('../vieclamtot_scraper/data/job.json', 'w')
         # self.file_job = open('/code/vieclamtot_scraper/data/job.json', 'w')
 
-        self.file_company = open('../vieclamtot_scraper/data/company.json', 'w')
+        # self.file_company = open('../vieclamtot_scraper/data/company.json', 'w')
         # self.file_company = open('/code/vieclamtot_scraper/data/company.json', 'w')
         # print('---------- Opened Main Pipeline ----------')
 
-    def close_spider(self, spider):
+    # def close_spider(self, spider):
+    #     self.end = time.time()
+    #     print(self.end - self.start)
         # print('---------- Closing Main Pipeline ----------')
-        json.dump(self.data_job, self.file_job, indent=4)
-        self.file_job.close()
+        # json.dump(self.data_job, self.file_job, indent=4)
+        # self.file_job.close()
 
-        json.dump(self.data_company, self.file_company, indent=4)
-        self.file_company.close()
+        # json.dump(self.data_company, self.file_company, indent=4)
+        # self.file_company.close()
         # print('---------- Closed Main Pipeline ----------')
 
     def process_item(self, item, spider):
@@ -46,11 +106,6 @@ class VieclamtotScraperPipeline:
             
             # return self.process_job_item(item)
             
-        else:
-            # print('---------- Processing Company ----------')
-            item = ItemAdapter(item)
-            self.data_company.append(item.asdict())
-            # return self.process_company_item(item)
         return item
 
     def process_job(self, item):
@@ -75,11 +130,11 @@ class VieclamtotScraperPipeline:
         if item['skills'] == 'None':
             item['skills'] = 'Không yêu cầu'
 
-        self.data_job.append(item.asdict())
+        # self.data_job.append(item.asdict())
 
         # print(item.asdict())
 
-        return item
+        return VieclamtotJobScraperItem(item)
 
 
 class DuplicatesPipeline:

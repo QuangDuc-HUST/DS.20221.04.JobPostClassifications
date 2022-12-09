@@ -47,7 +47,7 @@ def load_job():
     print(end - start)
 
 
-load_job()
+# load_job()
 
 
 def load_company():

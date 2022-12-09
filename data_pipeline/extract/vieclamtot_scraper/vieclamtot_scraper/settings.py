@@ -67,7 +67,9 @@ LOG_LEVEL = 'INFO'
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'vieclamtot_scraper.pipelines.VieclamtotScraperPipeline': 400,
+   'vieclamtot_scraper.pipelines.VieclamtotScraperLoadPipeline': 600,
+   'vieclamtot_scraper.pipelines.VieclamtotScraperTransformPipeline': 500,
+   'vieclamtot_scraper.pipelines.VieclamtotScraperPreprocessPipeline': 400,
    'vieclamtot_scraper.pipelines.DuplicatesPipeline': 300,
 }
 

@@ -19,7 +19,7 @@ class VieclamtotlinksSpider(scrapy.Spider):
     # connection = one_connection
     # cursor = connection.cursor()
     
-    def __init__(self, end_page='10', **kwargs):
+    def __init__(self, end_page='1', **kwargs):
 
         self.found = True
         self.url = "https://www.vieclamtot.com/viec-lam" 
@@ -34,7 +34,7 @@ class VieclamtotlinksSpider(scrapy.Spider):
 
     def start_requests(self):
 
-        for t in self.get_id_list(): 
+        for t in self.get_id_list()[:1]: 
             for p in range(self.end_page):
                 if self.found:
                     yield scrapy.Request(self.url + "-sdjt" + str(t) + "?&page=" + str(p) + "&sp=0", callback=self.parse_links, meta={
