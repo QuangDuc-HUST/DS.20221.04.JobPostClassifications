@@ -56,9 +56,9 @@ class Vieclam24hSpider(scrapy.Spider):
                 break
             
         if self.parameters == []:
-            f = json.load(open('./error/error.json', 'r'))
-            f.append({'url': response.url, 'job_type_id': response.meta['job_type_id']})
-            json.dump(f, open('./error/error.json', 'w'))
+            # f = json.load(open('./error/error.json', 'r'))
+            # f.append({'url': response.url, 'job_type_id': response.meta['job_type_id']})
+            # json.dump(f, open('./error/error.json', 'w'))
             return 
 
         self.job_detail = data["props"]["initialState"]['api']['jobDetailHiddenContact']['data']
