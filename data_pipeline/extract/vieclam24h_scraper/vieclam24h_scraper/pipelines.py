@@ -10,9 +10,87 @@ import json
 from scrapy.exceptions import DropItem
 import re
 from .items import *
+import sys
+sys.path.append('../../..')
+from data_pipeline.transform.processing.transform_colab import *
+from data_pipeline.load.load_airtable import *
+from data_pipeline.load.load_airtable_colab import *
+from data_pipeline.transform.processing.transformed_item import *
 
 
-class Vieclam24HScraperPipeline:
+
+class DuplicatesPipeline:
+
+    def __init__(self):
+        self.ids_seen = set()
+
+    def process_item(self, item, spider):
+        # print('---------- Filtering Duplicate ----------')
+        adapter = ItemAdapter(item)
+        if adapter['id'] in self.ids_seen:
+            raise DropItem()
+        else:
+            self.ids_seen.add(adapter['id'])
+            return item
+
+
+class Vieclam24HScraperTransformPipeline:
+
+    def process_item(self, item, spider):
+        if isinstance(item, Vieclam24HScraperJobItem):
+            try:
+                return TransformedScraperJobItem(transform_vl24h_job(item))
+            except Exception as e:
+                print('JOB')
+                print(e)
+            
+        else:
+            try:
+                return TransformedScraperCompanyItem(transform_vl24h_company(item))
+            except Exception as e:
+                print('COMPANYYYYYY')
+                print(e)
+                print(traceback.format_exc())
+
+
+class Vieclam24HScraperLoadPipeline:
+
+    def open_spider(self, spider):
+        self.n_job = 0
+        self.n_company = 0
+
+        self.job = []
+        self.company = []
+        self.base = base
+
+    def process_item(self, item, spider):
+
+        if isinstance(item, TransformedScraperJobItem):
+            self.n_job += 1
+            if self.n_job == 10:
+                load_job(self.job, base)
+                self.n_job = 0
+                self.job = []
+            else:
+                self.job.append(dict(item))
+            
+        else:
+            self.n_company += 1
+            if self.n_company == 10:
+                load_company(self.company, base)
+                self.n_company = 0
+                self.company = []
+            else:
+                self.company.append(dict(item))
+    
+    def close_spider(self, spider):
+        if len(self.job) != 0:
+            load_job(self.job, base)
+        if len(self.company) != 0:
+            load_company(self.company, base)
+
+
+class Vieclam24HScraperPreprocessPipeline:
 
     def __init__(self) -> None:
         self.first_item = True
@@ -20,23 +98,23 @@ class Vieclam24HScraperPipeline:
         self.data_job = []
         self.data_company = []
 
-    def open_spider(self, spider):
-        # print('---------- Opening Main Pipeline ----------')
-        self.file_job = open('../vieclam24h_scraper/data/job.json', 'w')
-        # self.file_job = open('/code/vieclam24h_scraper/data/job.json', 'w')
+    # def open_spider(self, spider):
+    #     # print('---------- Opening Main Pipeline ----------')
+    #     self.file_job = open('../vieclam24h_scraper/data/job.json', 'w')
+    #     # self.file_job = open('/code/vieclam24h_scraper/data/job.json', 'w')
 
-        self.file_company = open('../vieclam24h_scraper/data/company.json', 'w')
-        # self.file_company = open('/code/vieclam24h_scraper/data/company.json', 'w')
-        # print('---------- Opened Main Pipeline ----------')
+    #     self.file_company = open('../vieclam24h_scraper/data/company.json', 'w')
+    #     # self.file_company = open('/code/vieclam24h_scraper/data/company.json', 'w')
+    #     # print('---------- Opened Main Pipeline ----------')
 
-    def close_spider(self, spider):
-        # print('---------- Closing Main Pipeline ----------')
-        json.dump(self.data_job, self.file_job, indent=4)
-        self.file_job.close()
+    # def close_spider(self, spider):
+    #     # print('---------- Closing Main Pipeline ----------')
+    #     json.dump(self.data_job, self.file_job, indent=4)
+    #     self.file_job.close()
 
-        json.dump(self.data_company, self.file_company, indent=4)
-        self.file_company.close()
-        # print('---------- Closed Main Pipeline ----------')
+    #     json.dump(self.data_company, self.file_company, indent=4)
+    #     self.file_company.close()
+    #     # print('---------- Closed Main Pipeline ----------')
 
     def process_item(self, item, spider):
         # print('---------- Processing ----------')
@@ -95,10 +173,10 @@ class Vieclam24HScraperPipeline:
 
         # line = json.dumps(ItemAdapter(item).asdict()) + ",\n"
         # self.file.write(line)
-        self.data_job.append(item.asdict())
+        # self.data_job.append(item.asdict())
         # print(item.asdict())
         # print('---------- Processing Complete ----------')
-        return item
+        return Vieclam24HScraperJobItem(item)
 
     def process_company_item(self, item):
         
@@ -113,10 +191,10 @@ class Vieclam24HScraperPipeline:
         if item['coordinate'].replace('None', '').replace(', ', '').strip() == '':
             item['coordinate'] = ''
 
-        self.data_company.append(item.asdict())
+        # self.data_company.append(item.asdict())
         # print(item.asdict())
         
-        return item
+        return Vieclam24HScraperCompanyItem(item)
 
     def get_age_range(self):
         age_range = sorted(self.metadata['job_requirement_age_range'], key=lambda x: x['value'])
@@ -157,25 +235,5 @@ class Vieclam24HScraperPipeline:
         self.provinces = {i['id']: i['name'] for i in provinces}
 
 
-class DuplicatesPipeline:
 
-    def __init__(self):
-        self.ids_seen = set()
-
-    def open_spider(self, spider):
-        # print('---------- Opening Duplicate Pipeline ----------')
-        pass
-       
-    def close_spider(self, spider):
-        # print('---------- Closing Dupilicate Pipeline ----------')
-        pass
-
-    def process_item(self, item, spider):
-        # print('---------- Filtering Duplicate ----------')
-        adapter = ItemAdapter(item)
-        if adapter['id'] in self.ids_seen:
-            raise DropItem()
-        else:
-            self.ids_seen.add(adapter['id'])
-            return item
         

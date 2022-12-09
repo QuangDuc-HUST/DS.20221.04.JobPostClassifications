@@ -13,7 +13,7 @@ class Vieclam24hSpider(scrapy.Spider):
         level=logging.INFO
     )
 
-    def __init__(self, end_page='20', **kwargs):
+    def __init__(self, end_page='10', **kwargs):
 
         self.url = "https://vieclam24h.vn/tim-kiem-viec-lam-nhanh"
         self.end_page = int(end_page)
@@ -23,7 +23,7 @@ class Vieclam24hSpider(scrapy.Spider):
         super().__init__(**kwargs)
 
     def start_requests(self):
-        for t in range(113, 181):
+        for t in range(113, 181)[:1]:
             for p in range(self.end_page):
                 yield scrapy.Request(self.url + "?field_ids[]=" + str(t) + "&page=" + str(p), callback=self.parse_links, meta={
                     "download_timeout": 10,
@@ -45,6 +45,7 @@ class Vieclam24hSpider(scrapy.Spider):
             
     def _get_javascript_data(self, response):
 
+        
         data = {}
         for script in response.xpath("//script").getall():
             if '<script type="application/ld+json">' in str(script):
@@ -53,6 +54,12 @@ class Vieclam24hSpider(scrapy.Spider):
             if '<script id="__NEXT_DATA__" type="application/json">' in str(script):
                 data = json.loads(script.split('<script id="__NEXT_DATA__" type="application/json">')[1].split('</script>')[0])
                 break
+            
+        if self.parameters == []:
+            f = json.load(open('./error/error.json', 'r'))
+            f.append({'url': response.url, 'job_type_id': response.meta['job_type_id']})
+            json.dump(f, open('./error/error.json', 'w'))
+            return 
 
         self.job_detail = data["props"]["initialState"]['api']['jobDetailHiddenContact']['data']
         self.employer_detail = data["props"]["initialState"]['api']['employerDetailHiddenContact']['data']
@@ -101,9 +108,7 @@ class Vieclam24hSpider(scrapy.Spider):
 
             return jobItem.load_item()
         except Exception as e:
-            with open('./error/error_job_url_{}.txt'.format(str(int(time.mktime(date.today().timetuple())))), 'a') as f:
-                f.write(str(response.url) + ', ' + str(e) + '\n')
-                f.close()
+            print(traceback.format_exc())
 
     def parse_company(self, response):
         try:
@@ -117,6 +122,4 @@ class Vieclam24hSpider(scrapy.Spider):
 
             return companyItem.load_item()
         except Exception as e:
-            with open('./error/error_company_url_{}.txt'.format(str(int(time.mktime(date.today().timetuple())))), 'a') as f:
-                f.write(str(response.url) + ', ' + str(e) + '\n')
-                f.close()
+            print(traceback.format_exc())

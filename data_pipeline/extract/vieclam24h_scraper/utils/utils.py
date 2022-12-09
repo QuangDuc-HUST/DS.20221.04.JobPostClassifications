@@ -7,6 +7,7 @@ import time
 from scrapy.loader import ItemLoader
 import logging
 from scrapy.utils.log import configure_logging
+import traceback
 
 def preprocess(self, link):
         return urljoin(self.url, link)
