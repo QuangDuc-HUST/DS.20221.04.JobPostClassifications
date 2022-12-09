@@ -34,7 +34,7 @@ class VieclamtotlinksSpider(scrapy.Spider):
 
     def start_requests(self):
 
-        for t in self.get_id_list()[:1]: 
+        for t in self.get_id_list(): 
             for p in range(self.end_page):
                 if self.found:
                     yield scrapy.Request(self.url + "-sdjt" + str(t) + "?&page=" + str(p) + "&sp=0", callback=self.parse_links, meta={

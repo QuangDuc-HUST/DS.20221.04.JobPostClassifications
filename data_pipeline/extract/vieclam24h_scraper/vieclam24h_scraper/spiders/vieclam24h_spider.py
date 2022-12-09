@@ -23,7 +23,7 @@ class Vieclam24hSpider(scrapy.Spider):
         super().__init__(**kwargs)
 
     def start_requests(self):
-        for t in range(113, 181)[:1]:
+        for t in range(113, 181):
             for p in range(self.end_page):
                 yield scrapy.Request(self.url + "?field_ids[]=" + str(t) + "&page=" + str(p), callback=self.parse_links, meta={
                     "download_timeout": 10,
