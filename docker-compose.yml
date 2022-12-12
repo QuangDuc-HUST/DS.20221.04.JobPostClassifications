@@ -1,0 +1,66 @@
+version: '3.9'
+services:
+  nifi:
+    container_name: nifi 
+    build: .
+    env_file: .env
+    ports:
+      - 8443:8443/tcp
+    # environment:
+      # SINGLE_USER_CREDENTIALS_USERNAME: admin
+      # SINGLE_USER_CREDENTIALS_PASSWORD: adminadminadmin
+      # NIFI_WEB_HTTPS_HOST: 'localhost'
+      # NIFI_WEB_HTTPS_PORT: '8443'
+
+      # AUTH: ssl 
+      # KEYSTORE_PATH: /opt/certs/nifi-keyStore.p12
+      # KEYSTORE_TYPE: PKCS12 
+      # KEYSTORE_PASSWORD: confluent
+      # TRUSTSTORE_PATH: /opt/certs/nifi.truststore.jks 
+      # TRUSTSTORE_PASSWORD: confluent 
+      # TRUSTSTORE_TYPE: JKS 
+      # INITIAL_ADMIN_IDENTITY: 'CN: nifi, O: CONFLUENT, OU: TEST, C: US'
+    
+    volumes:
+      - .:/project
+      # - ./secrets:/opt/certs
+    # networks:
+    #   - nifi
+  
+  mongodb:
+    image: mongo:latest
+    container_name: ${MONGO_CONTAINER}
+    restart: unless-stopped
+    ports:
+      - ${MONGO_PORT}:${MONGO_PORT}
+    environment:
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+    volumes:
+      - "mongodb:/data/db"
+    # networks:
+    #   - crawler_network
+
+  postgresdb:
+    image: postgres:latest
+    container_name: ${PG_CONTAINER}
+    restart: unless-stopped
+    ports:
+      - "${PG_PORT}:${PG_PORT}"
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_HOST: ${PG_HOST}
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      # POSTGRES_DB: ${PG_DB}
+    volumes:
+      # - "postgres:/var/lib/postgresql/data"
+      - ./modeling/dw.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  # postgres:
+  mongodb: 
+# networks:
+#   nifi: 
+#     driver: bridge
