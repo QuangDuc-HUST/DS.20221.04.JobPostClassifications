@@ -1,9 +1,10 @@
 # Importing Necessary modules
 from fastapi import FastAPI
-from model import *
+from models import *
+import sys
+sys.path.append('..')
 from utils.utils import *
 import uvicorn
-import wandb
 
 # Declaring our FastAPI instance
 app = FastAPI()

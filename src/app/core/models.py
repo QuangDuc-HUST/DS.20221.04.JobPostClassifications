@@ -6,8 +6,6 @@ from sklearn.svm import SVC
 project = "dsproject"
 entity = "double-l-team"
 
-run = wandb.init(project=project, entity=entity)
-
 
 def get_baseline_model():
     
