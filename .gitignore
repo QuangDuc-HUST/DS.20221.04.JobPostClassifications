@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -128,7 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-=======
 secrets
 *.csv
 *.json
@@ -136,4 +134,5 @@ log_record*.txt
 *.pyc
 
 !configuration/*.json
->>>>>>> data_pipeline
+
+wandb
