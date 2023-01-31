@@ -12,9 +12,7 @@ import re
 from .items import *
 import sys
 sys.path.append('../../..')
-from data_pipeline.transform.processing.transform_colab import *
-from data_pipeline.load.load_airtable import *
-from data_pipeline.load.load_airtable_colab import *
+from data_pipeline.transform.processing.transform_new import *
 from data_pipeline.transform.processing.transformed_item import *
 
 
@@ -34,60 +32,19 @@ class DuplicatesPipeline:
             return item
 
 
-class Vieclam24HScraperTransformPipeline:
-
-    def process_item(self, item, spider):
-        if isinstance(item, Vieclam24HScraperJobItem):
-            try:
-                return TransformedScraperJobItem(transform_vl24h_job(item))
-            except Exception as e:
-                print('JOB')
-                print(e)
-            
-        else:
-            try:
-                return TransformedScraperCompanyItem(transform_vl24h_company(item))
-            except Exception as e:
-                print('COMPANYYYYYY')
-                print(e)
-                print(traceback.format_exc())
-
-
 class Vieclam24HScraperLoadPipeline:
 
     def open_spider(self, spider):
         self.n_job = 0
-        self.n_company = 0
 
         self.job = []
-        self.company = []
-        self.base = base
 
     def process_item(self, item, spider):
-
-        if isinstance(item, TransformedScraperJobItem):
-            self.n_job += 1
-            if self.n_job == 10:
-                load_job(self.job, base)
-                self.n_job = 0
-                self.job = []
-            else:
-                self.job.append(dict(item))
-            
-        else:
-            self.n_company += 1
-            if self.n_company == 10:
-                load_company(self.company, base)
-                self.n_company = 0
-                self.company = []
-            else:
-                self.company.append(dict(item))
+        print(dict(item))
+        self.job.append(dict(item))
     
     def close_spider(self, spider):
-        if len(self.job) != 0:
-            load_job(self.job, base)
-        if len(self.company) != 0:
-            load_company(self.company, base)
+        json.dump(self.job, open('./../../transform/staging/staging_vieclam24h.json', 'w'))
 
 
 class Vieclam24HScraperPreprocessPipeline:
@@ -97,24 +54,6 @@ class Vieclam24HScraperPreprocessPipeline:
         self.metadata = None
         self.data_job = []
         self.data_company = []
-
-    # def open_spider(self, spider):
-    #     # print('---------- Opening Main Pipeline ----------')
-    #     self.file_job = open('../vieclam24h_scraper/data/job.json', 'w')
-    #     # self.file_job = open('/code/vieclam24h_scraper/data/job.json', 'w')
-
-    #     self.file_company = open('../vieclam24h_scraper/data/company.json', 'w')
-    #     # self.file_company = open('/code/vieclam24h_scraper/data/company.json', 'w')
-    #     # print('---------- Opened Main Pipeline ----------')
-
-    # def close_spider(self, spider):
-    #     # print('---------- Closing Main Pipeline ----------')
-    #     json.dump(self.data_job, self.file_job, indent=4)
-    #     self.file_job.close()
-
-    #     json.dump(self.data_company, self.file_company, indent=4)
-    #     self.file_company.close()
-    #     # print('---------- Closed Main Pipeline ----------')
 
     def process_item(self, item, spider):
         # print('---------- Processing ----------')
@@ -131,13 +70,7 @@ class Vieclam24HScraperPreprocessPipeline:
             # self.first_item = False
             # print('------------ Saved Metadata ----------------')
 
-        if isinstance(item, Vieclam24HScraperJobItem):
-            # print('---------- Processing Job ----------')
-            return self.process_job_item(item)
-            
-        else:
-            # print('---------- Processing Company ----------')
-            return self.process_company_item(item)
+        return self.process_job_item(item)
         
     def process_job_item(self, item):
 
@@ -171,30 +104,22 @@ class Vieclam24HScraperPreprocessPipeline:
             print(e)
             item['contract_type'] = ''
 
+        item['company_province'] = self.provinces[item['company_province']]
+        try:
+            adr = item['company_address']
+        except Exception as e:
+            print(e)
+            item['company_address'] = ''
+
+        if item['company_coordinate'].replace('None', '').replace(', ', '').strip() == '':
+            item['company_coordinate'] = ''
+
         # line = json.dumps(ItemAdapter(item).asdict()) + ",\n"
         # self.file.write(line)
         # self.data_job.append(item.asdict())
         # print(item.asdict())
         # print('---------- Processing Complete ----------')
-        return Vieclam24HScraperJobItem(item)
-
-    def process_company_item(self, item):
-        
-        item = ItemAdapter(item)
-        item['province'] = self.provinces[item['province']]
-        try:
-            adr = item['address']
-        except Exception as e:
-            print(e)
-            item['address'] = ''
-
-        if item['coordinate'].replace('None', '').replace(', ', '').strip() == '':
-            item['coordinate'] = ''
-
-        # self.data_company.append(item.asdict())
-        # print(item.asdict())
-        
-        return Vieclam24HScraperCompanyItem(item)
+        return Vieclam24HScraperItem(item)
 
     def get_age_range(self):
         age_range = sorted(self.metadata['job_requirement_age_range'], key=lambda x: x['value'])

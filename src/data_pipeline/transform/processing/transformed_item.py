@@ -6,7 +6,6 @@ class TransformedScraperJobItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
     id = scrapy.Field()
-    company_id = scrapy.Field()
     post_time = scrapy.Field()
     title = scrapy.Field()
     description = scrapy.Field()
@@ -27,23 +26,14 @@ class TransformedScraperJobItem(scrapy.Item):
     url = scrapy.Field()
     created_time = scrapy.Field()
     updated_time = scrapy.Field()
+
+    company_id = scrapy.Field()
+    company_name = scrapy.Field()
+    company_region = scrapy.Field()
+    company_coordinate = scrapy.Field()
+    company_address = scrapy.Field()
     
 
     def __str__(self):
         return ""
 
-
-class  TransformedScraperCompanyItem(scrapy.Item):
-
-    id = scrapy.Field()
-    
-    name = scrapy.Field()
-
-    region = scrapy.Field()
-
-    coordinate = scrapy.Field()
-
-    address = scrapy.Field()
-
-    def __str__(self):
-        return ""

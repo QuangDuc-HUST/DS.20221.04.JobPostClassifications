@@ -12,61 +12,23 @@ from scrapy.exceptions import DropItem
 import re
 import sys
 sys.path.append('../../..')
-from data_pipeline.transform.processing.transform_colab import *
-from data_pipeline.load.load_airtable import *
-from data_pipeline.load.load_airtable_colab import *
+from data_pipeline.transform.processing.transform_new import *
 from data_pipeline.transform.processing.transformed_item import *
 
-class VieclamtotScraperTransformPipeline:
-
-    def process_item(self, item, spider):
-        if isinstance(item, VieclamtotJobScraperItem):
-            try:
-                return TransformedScraperJobItem(transform_vlt_job(item))
-            except Exception as e:
-                print(e)
-            
-        else:
-            try:
-                return TransformedScraperCompanyItem(transform_vlt_company(item))
-            except Exception as e:
-                print(e)
 
 class VieclamtotScraperLoadPipeline:
 
     def open_spider(self, spider):
         self.n_job = 0
-        self.n_company = 0
 
         self.job = []
-        self.company = []
-        self.base = base
 
     def process_item(self, item, spider):
-
-        if isinstance(item, TransformedScraperJobItem):
-            self.n_job += 1
-            if self.n_job == 10:
-                load_job(self.job, base)
-                self.n_job = 0
-                self.job = []
-            else:
-                self.job.append(dict(item))
-            
-        else:
-            self.n_company += 1
-            if self.n_company == 10:
-                load_company(self.company, base)
-                self.n_company = 0
-                self.company = []
-            else:
-                self.company.append(dict(item))
+        print(dict(item))
+        self.job.append(dict(item))
     
     def close_spider(self, spider):
-        if len(self.job) != 0:
-            load_job(self.job, base)
-        if len(self.company) != 0:
-            load_company(self.company, base)
+        json.dump(self.job, open('./../../transform/staging/staging_vieclamtot.json', 'w'))
 
 
 class VieclamtotScraperPreprocessPipeline:
@@ -100,15 +62,9 @@ class VieclamtotScraperPreprocessPipeline:
 
     def process_item(self, item, spider):
         
-        if isinstance(item, VieclamtotJobScraperItem):
-            # print('---------- Processing Job ----------')
-            return self.process_job(item)
-            
-            # return self.process_job_item(item)
-            
-        return item
+        return self.process_job_item(item)
 
-    def process_job(self, item):
+    def process_job_item(self, item):
 
         item = ItemAdapter(item)
 

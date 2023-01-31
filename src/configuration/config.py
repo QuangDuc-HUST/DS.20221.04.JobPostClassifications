@@ -33,24 +33,6 @@ class Config:
     def get_postgres_database(self):
         return self.config["postgres"]["database"]
 
-    def get_mongo_config(self):
-        return self.config["mongo"]
-
-    def get_mongo_user(self):
-        return self.config["mongo"]["user"]
-
-    def get_mongo_password(self):
-        return self.config["mongo"]["password"]
-
-    def get_mongo_host(self):
-        return self.config["mongo"]["host"]
-
-    def get_mongo_port(self):
-        return self.config["mongo"]["port"]
-
-    def get_mongo_database(self):
-        return self.config["mongo"]["database"]
-
     def get_airtable_api(self):
         return self.config["airtable"]["api"]
 

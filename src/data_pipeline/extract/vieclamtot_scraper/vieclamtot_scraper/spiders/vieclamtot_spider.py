@@ -14,12 +14,8 @@ class VieclamtotlinksSpider(scrapy.Spider):
         datefmt="%F %A %T",
         level=logging.INFO
     )
-    # Lấy kết nối tổng để đảm bảo chỉ có 1 connection đến PostgreSQL, tránh được việc quá tải nhiều yêu cầu truy xuất khi quét đa luồng
-    # global one_connection
-    # connection = one_connection
-    # cursor = connection.cursor()
     
-    def __init__(self, end_page='1', **kwargs):
+    def __init__(self, end_page='100', **kwargs):
 
         self.found = True
         self.url = "https://www.vieclamtot.com/viec-lam" 
@@ -88,82 +84,61 @@ class VieclamtotlinksSpider(scrapy.Spider):
         self.data = all_data["props"]["initialState"]["adView"]["adInfo"]["ad"]
         self.parameters = all_data["props"]["initialState"]["adView"]["adInfo"]["ad_params"]
         
-        yield self.parse_job(response)
-        yield self.parse_company(response)
+        if self.data["list_time"] < 1672506000 and self.data["list_time"] >= 1640970000:
+            yield self.parse_job(response)
 
     def parse_job(self, response):
         try:
 
-            jobItem = ItemLoader(item=VieclamtotJobScraperItem())
+            itemvlt = ItemLoader(item=VieclamtotJobScraperItem())
             
-            jobItem.add_value('id', self.data['list_id'])
-            jobItem.add_value("company_id", self.data['account_id'])
-            jobItem.add_value("job_id", self.data["job_type"])
-            jobItem.add_value("post_time", self.data["list_time"])
+            itemvlt.add_value('id', self.data['list_id'])
+            itemvlt.add_value("job_id", self.data["job_type"])
+            itemvlt.add_value("post_time", self.data["list_time"])
 
-            jobItem.add_value("title", self.data['subject'])
-            jobItem.add_value("full_description", self.data['body'])
-            jobItem.add_value("vacancies", self.data["vacancies"])
-            jobItem.add_value("min_salary", str(self.data.get("min_salary")))
-            jobItem.add_value("max_salary", str(self.data.get("max_salary")))
-            jobItem.add_value("min_age", str(self.data.get("min_age")))
-            jobItem.add_value("max_age", str(self.data.get("max_age")))
-            jobItem.add_value("benefits", str(self.data.get("benefits")))
-            jobItem.add_value("skills", str(self.data.get("skills")))
-            jobItem.add_value("region", str(self.data.get("region_name")))
+            itemvlt.add_value("title", self.data['subject'])
+            itemvlt.add_value("full_description", self.data['body'])
+            itemvlt.add_value("vacancies", self.data["vacancies"])
+            itemvlt.add_value("min_salary", str(self.data.get("min_salary")))
+            itemvlt.add_value("max_salary", str(self.data.get("max_salary")))
+            itemvlt.add_value("min_age", str(self.data.get("min_age")))
+            itemvlt.add_value("max_age", str(self.data.get("max_age")))
+            itemvlt.add_value("benefits", str(self.data.get("benefits")))
+            itemvlt.add_value("skills", str(self.data.get("skills")))
+            itemvlt.add_value("region", str(self.data.get("region_name")))
 
-            jobItem.add_value("address", str(self.parameters.get("address", {}).get("value")))
-            jobItem.add_value("salary_type", str(self.parameters["salary_type"]["value"]))
-            jobItem.add_value("contract_type", str(self.parameters["contract_type"]["value"]))
-            jobItem.add_value("job_type", str(self.parameters["job_type"]["value"]))
-            jobItem.add_value("preferred_education", str(self.parameters.get("preferred_education", {}).get("value")))
-            jobItem.add_value("preferred_gender", str(self.parameters.get("preferred_gender", {}).get("value")))
-            jobItem.add_value("preferred_working_experience", str(self.parameters.get("preferred_working_experience", {}).get("value")))
+            itemvlt.add_value("address", str(self.parameters.get("address", {}).get("value")))
+            itemvlt.add_value("salary_type", str(self.parameters["salary_type"]["value"]))
+            itemvlt.add_value("contract_type", str(self.parameters["contract_type"]["value"]))
+            itemvlt.add_value("job_type", str(self.parameters["job_type"]["value"]))
+            itemvlt.add_value("preferred_education", str(self.parameters.get("preferred_education", {}).get("value")))
+            itemvlt.add_value("preferred_gender", str(self.parameters.get("preferred_gender", {}).get("value")))
+            itemvlt.add_value("preferred_working_experience", str(self.parameters.get("preferred_working_experience", {}).get("value")))
 
-            jobItem.add_value("url", response.url)
+            itemvlt.add_value("url", response.url)
             now = time.strftime(r"%d/%m/%Y %H:%M:%S", time.localtime())
-            jobItem.add_value('created_time', now)
-            jobItem.add_value('updated_time', now)
+            itemvlt.add_value('created_time', now)
+            itemvlt.add_value('updated_time', now)
 
-            return jobItem.load_item()
         
         except Exception as e:
             with open('./error/error_job_url_{}.txt'.format(str(int(time.mktime(date.today().timetuple())))), 'a') as f:
                 f.write(str(response.url) + ', ' + str(e) + '\n')
                 f.close()
         
-        # try:
-        #     opt = Options()
-        #     opt.add_argument('--no-sandbox')
-        #     opt.add_argument('--headless')
-        #     opt.add_argument('--disable-dev-shm-usage')
-            
-        #     driver = webdriver.Chrome('chromedriver', chrome_options=opt)
-        #     driver.get(response.url)
-        #     rq = driver.wait_for_request('/v1/public/ad-listing/phone')
-        #     rl = json.loads(rq.response.body)
-            
-        #     driver.close()
-        #     driver.quit()
-        #     jobItem.add_value("phone", rl["phone"]
-        # except Exception as e:
-        #     jobItem.add_value("phone", ''
-        #     print(e)
-
-    def parse_company(self, response):
         try:
 
-            companyItem = ItemLoader(item=VieclamtotCompanyScraperItem())
+            itemvlt.add_value("company_id", self.data['account_id'])
+            itemvlt.add_value("company_name", str(self.parameters.get("company_name", {}).get("value")))
+            itemvlt.add_value("company_location", str(self.data.get('location')))
+            itemvlt.add_value("company_city", str(self.data.get("region_name")))
+            itemvlt.add_value("company_district", str(self.data.get("area_name")))
+            itemvlt.add_value("company_ward", str(self.data.get("ward_name")))
 
-            companyItem.add_value("id", self.data['account_id'])
-            companyItem.add_value("name", str(self.parameters.get("company_name", {}).get("value")))
-            companyItem.add_value("location", str(self.data.get('location')))
-            companyItem.add_value("city", str(self.data.get("region_name")))
-            companyItem.add_value("district", str(self.data.get("area_name")))
-            companyItem.add_value("ward", str(self.data.get("ward_name")))
-
-            return companyItem.load_item()
         except Exception as e:
             with open('./error/error_company_url_{}.txt'.format(str(int(time.mktime(date.today().timetuple())))), 'a') as f:
                 f.write(str(response.url) + ', ' + str(e) + '\n')
                 f.close()
+
+        return itemvlt.load_item()
+

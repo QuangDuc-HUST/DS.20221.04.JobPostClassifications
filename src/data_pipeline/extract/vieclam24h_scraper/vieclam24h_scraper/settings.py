@@ -65,7 +65,7 @@ LOG_LEVEL = 'INFO'
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    'vieclam24h_scraper.pipelines.Vieclam24HScraperLoadPipeline': 600,
-   'vieclam24h_scraper.pipelines.Vieclam24HScraperTransformPipeline': 500,
+   # 'vieclam24h_scraper.pipelines.Vieclam24HScraperTransformPipeline': 500,
    'vieclam24h_scraper.pipelines.Vieclam24HScraperPreprocessPipeline': 400,
    'vieclam24h_scraper.pipelines.DuplicatesPipeline': 300
 }

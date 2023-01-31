@@ -39,7 +39,7 @@ class TakeFirst1:
         return ''
 
 
-class Vieclam24HScraperJobItem(scrapy.Item):
+class Vieclam24HScraperItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
     id = scrapy.Field(
@@ -125,42 +125,36 @@ class Vieclam24HScraperJobItem(scrapy.Item):
         input_processor=MapCompose(),
         output_processor=TakeFirst1()
     )
+
     company_id = scrapy.Field(
         input_processor=MapCompose(),
         output_processor=TakeFirst1()
     )
-
-    def __str__(self):
-        return ""
-
-
-class Vieclam24HScraperCompanyItem(scrapy.Item):
-
-    id = scrapy.Field(
-        input_processor=MapCompose(),
-        output_processor=TakeFirst1()
-    )
     
-    name = scrapy.Field(
+    company_name = scrapy.Field(
         input_processor=MapCompose(),
         output_processor=TakeFirst1()
     )
 
-    province = scrapy.Field(
+    company_province = scrapy.Field(
         input_processor=MapCompose(),
         output_processor=TakeFirst1()
     )
 
-    coordinate = scrapy.Field(
+    company_coordinate = scrapy.Field(
         input_processor=MapCompose(),
         output_processor=Join(', ')
     )
 
-    address = scrapy.Field(
+    company_address = scrapy.Field(
         input_processor=MapCompose(process_none_value),
         output_processor=TakeFirst1()
     )
 
     def __str__(self):
         return ""
+
+
+    
+
 

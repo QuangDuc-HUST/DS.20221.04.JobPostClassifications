@@ -35,10 +35,6 @@ class VieclamtotJobScraperItem(scrapy.Item):
         input_processor=MapCompose(),
         output_processor=TakeFirst1()
     )
-    company_id = scrapy.Field(
-        input_processor=MapCompose(),
-        output_processor=TakeFirst1()
-    )
     job_id = scrapy.Field(
         input_processor=MapCompose(),
         output_processor=TakeFirst1()
@@ -129,39 +125,35 @@ class VieclamtotJobScraperItem(scrapy.Item):
         input_processor=MapCompose(),
         output_processor=TakeFirst1()
     )
-
-    def __str__(self):
-        return ""
-
-
-class VieclamtotCompanyScraperItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    id = scrapy.Field(
-        input_processor=MapCompose(),
-        output_processor=TakeFirst1()
-    )
-    name = scrapy.Field(
+    company_id = scrapy.Field(
         input_processor=MapCompose(),
         output_processor=TakeFirst1()
     )
 
-    location = scrapy.Field(
+    company_name = scrapy.Field(
         input_processor=MapCompose(),
         output_processor=TakeFirst1()
     )
-    city = scrapy.Field(
+
+    company_location = scrapy.Field(
         input_processor=MapCompose(),
         output_processor=TakeFirst1()
     )
-    district = scrapy.Field(
+    company_city = scrapy.Field(
         input_processor=MapCompose(),
         output_processor=TakeFirst1()
     )
-    ward = scrapy.Field(
+    company_district = scrapy.Field(
+        input_processor=MapCompose(),
+        output_processor=TakeFirst1()
+    )
+    company_ward = scrapy.Field(
         input_processor=MapCompose(),
         output_processor=TakeFirst1()
     )
 
     def __str__(self):
         return ""
+
+
+

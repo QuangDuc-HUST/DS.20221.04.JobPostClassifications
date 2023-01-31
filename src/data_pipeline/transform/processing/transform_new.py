@@ -18,12 +18,6 @@ def transform_vlt_company(item):
 
     return item
 
-def transform_vl24h_company(item):
-
-    item = dict(item)
-    item['region'] = item.pop('province')
-    item['coordinate'] = item['coordinate'] if item['coordinate'] != '0, 0' else ''
-    return item
 
 def transform_vlt_job(item):
     item = dict(item)
@@ -46,6 +40,18 @@ def transform_vlt_job(item):
         if re.match('.+, \d+', item['age_range']) is None:
             item['age_range'] = re.findall('\d+', item['age_range'])[0] + '-'
 
+        
+
+        item['coordinate'] = item.pop('location').replace(',', ', ') if item['location'] != '0,0' else ''
+        item['region'] = item['city'].replace("Tp H\u1ed3 Ch\u00ed Minh", 'TP.HCM').replace('Tp Hồ Chí Minh', 'TP.HCM')
+
+        adr = []
+        for k in ['ward', 'district', 'city']:
+            if item[k] != 'None':
+                adr.append(k)
+
+        item['address'] = ', '.join([item.pop(k) for k in adr])
+
         for k in item.keys():
             if item[k] == 'None':
                 item[k] = ''
@@ -54,7 +60,7 @@ def transform_vlt_job(item):
     except Exception as e:
         print(traceback.format_exc())
 
-def transform_vl24h_job(item):
+def transform_vl24h(item):
 
     item = dict(item)
     try:
@@ -69,6 +75,8 @@ def transform_vl24h_job(item):
             if item[k] == 'None':
                 item[k] = ''
 
+        item['company_region'] = item.pop('company_province')
+        item['company_coordinate'] = item['company_coordinate'] if item['company_coordinate'] != '0, 0' else ''
         return item
 
     except Exception as e:

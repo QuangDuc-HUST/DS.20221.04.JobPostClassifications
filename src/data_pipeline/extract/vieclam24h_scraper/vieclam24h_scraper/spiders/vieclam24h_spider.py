@@ -13,7 +13,7 @@ class Vieclam24hSpider(scrapy.Spider):
         level=logging.INFO
     )
 
-    def __init__(self, end_page='10', **kwargs):
+    def __init__(self, end_page='40', **kwargs):
 
         self.url = "https://vieclam24h.vn/tim-kiem-viec-lam-nhanh"
         self.end_page = int(end_page)
@@ -23,7 +23,7 @@ class Vieclam24hSpider(scrapy.Spider):
         super().__init__(**kwargs)
 
     def start_requests(self):
-        for t in range(113, 181):
+        for t in range(1, 36): 
             for p in range(self.end_page):
                 yield scrapy.Request(self.url + "?field_ids[]=" + str(t) + "&page=" + str(p), callback=self.parse_links, meta={
                     "download_timeout": 10,
@@ -69,57 +69,57 @@ class Vieclam24hSpider(scrapy.Spider):
         # self.first_item = False
 
         # return job_detail, employer_detail, parameters, data
-
-        yield self.parse_job(response)
-        yield self.parse_company(response)
+        if self.job_detail['updated_at'] >= 1672506000:
+            print(self.job_detail['updated_at'])
+            yield self.parse_job(response)
 
     def parse_job(self, response):
         try:
-            jobItem = ItemLoader(item=Vieclam24HScraperJobItem())
+            item24h = ItemLoader(item=Vieclam24HScraperItem())
 
-            jobItem.add_value('id', self.job_detail['id'])
-            jobItem.add_value('company_id', self.employer_detail['id'])
-            jobItem.add_value('post_time', self.job_detail['updated_at'])
-            jobItem.add_value('post_title', self.job_detail['title'])
-            jobItem.add_value('description', self.job_detail['description'])
-            jobItem.add_value('vacancies', self.job_detail["vacancy_quantity"])
-            jobItem.add_value('min_salary', self.job_detail['salary_min'])
-            jobItem.add_value('max_salary', self.job_detail['salary_max'])
-            jobItem.add_value('age_range', str(self.job_detail.get('age_range')))
-            jobItem.add_value('gender', self.job_detail['gender'])
-            jobItem.add_value('benefits', self.job_detail["benefit"])
-            jobItem.add_value('education_requirements', self.job_detail['degree_requirement'])
-            jobItem.add_value('experience_requirements', self.job_detail['experience_range'])
-            jobItem.add_value('contract_type', self.job_detail['working_method'])
+            item24h.add_value('id', self.job_detail['id'])
+            item24h.add_value('post_time', self.job_detail['updated_at'])
+            item24h.add_value('post_title', self.job_detail['title'])
+            item24h.add_value('description', self.job_detail['description'])
+            item24h.add_value('vacancies', self.job_detail["vacancy_quantity"])
+            item24h.add_value('min_salary', self.job_detail['salary_min'])
+            item24h.add_value('max_salary', self.job_detail['salary_max'])
+            item24h.add_value('age_range', str(self.job_detail.get('age_range')))
+            item24h.add_value('gender', self.job_detail['gender'])
+            item24h.add_value('benefits', self.job_detail["benefit"])
+            item24h.add_value('education_requirements', self.job_detail['degree_requirement'])
+            item24h.add_value('experience_requirements', self.job_detail['experience_range'])
+            item24h.add_value('contract_type', self.job_detail['working_method'])
 
             # print(response.url)
             if self.parameters != []:
-                jobItem.add_value('job_location', self.parameters['jobLocation']['address']['streetAddress'])
-                jobItem.add_value('region', self.parameters['jobLocation']['address'].get("addressRegion", ""))
-                jobItem.add_value('salary_type', self.parameters['baseSalary']['value']['unitText'])
-                jobItem.add_value('industry', self.parameters['industry'])
+                item24h.add_value('job_location', self.parameters['jobLocation']['address']['streetAddress'])
+                item24h.add_value('region', self.parameters['jobLocation']['address'].get("addressRegion", ""))
+                item24h.add_value('salary_type', self.parameters['baseSalary']['value']['unitText'])
+                item24h.add_value('industry', self.parameters['industry'])
 
-            jobItem.add_value('job_type_id', response.meta['job_type_id'])
-            jobItem.add_value('url', response.url)
+            item24h.add_value('job_type_id', response.meta['job_type_id'])
+            item24h.add_value('url', response.url)
 
             now = time.strftime(r"%d/%m/%Y %H:%M:%S", time.localtime())
-            jobItem.add_value('created_time', now)
-            jobItem.add_value('updated_time', now)
+            item24h.add_value('created_time', now)
+            item24h.add_value('updated_time', now)
 
-            return jobItem.load_item()
         except Exception as e:
+            print("Viec Lam 24h: Job Error")
             print(traceback.format_exc())
 
-    def parse_company(self, response):
         try:
-            companyItem = ItemLoader(item=Vieclam24HScraperCompanyItem())
 
-            companyItem.add_value('id', self.employer_detail['id'])
-            companyItem.add_value('name', self.employer_detail['name'])
-            companyItem.add_value('coordinate', [str(self.employer_detail.get('latitude')), str(self.employer_detail.get('longitude'))])
-            companyItem.add_value('address', self.employer_detail['address'])
-            companyItem.add_value('province', self.employer_detail['province_id'])
+            item24h.add_value('company_id', self.employer_detail['id'])
+            item24h.add_value('company_name', self.employer_detail['name'])
+            item24h.add_value('company_coordinate', [str(self.employer_detail.get('latitude')), str(self.employer_detail.get('longitude'))])
+            item24h.add_value('company_address', self.employer_detail['address'])
+            item24h.add_value('company_province', self.employer_detail['province_id'])
 
-            return companyItem.load_item()
         except Exception as e:
+            print("Viec Lam 24h: Company Error")
             print(traceback.format_exc())
+
+        return item24h.load_item()
+        
