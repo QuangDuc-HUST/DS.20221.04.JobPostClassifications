@@ -1,4 +1,5 @@
 import os
+import time
 
 import shutil
 import torch
@@ -109,9 +110,12 @@ def load_checkpoint(checkpoint, model, optimizer=None):
 
 def train_model(model, device, train_dataloader, val_dataloader, metrics, criteria, optimizer, num_epochs, checkpoint_dir, scheduler=None):
 
+    start_training_time = time.time()    
+
     model.to(device) 
 
-    best_metric = 0
+    best_f1_metric = 0
+    best_cf_metric = None
 
     for epoch in range(num_epochs):
         
@@ -188,9 +192,10 @@ def train_model(model, device, train_dataloader, val_dataloader, metrics, criter
                 t.set_postfix(loss='{:05.3f}'.format(loss_val_sum / len(val_dataloader)))
                 
 
-                is_best = f1_score > best_metric
+                is_best = f1_score > best_f1_metric
                 if is_best:
-                    best_metric = f1_score
+                    best_f1_metric = f1_score
+                    best_cf_metric = cfm
                     print("- Found new best accuracy performance")
                 
                 if checkpoint_dir:
@@ -203,11 +208,14 @@ def train_model(model, device, train_dataloader, val_dataloader, metrics, criter
 
     print("----- DONE ------")
 
-    return f1_score, cfm
+    training_time = time.time() - start_training_time
 
+    return training_time, best_f1_metric, best_cf_metric
 
 
 def evaluate_model(model_architecure, state_file, device, dataloader, metrics):
+
+    start_inference_time = time.time()    
 
     print(f"Evaluating on test set ...")
   
@@ -251,4 +259,6 @@ def evaluate_model(model_architecure, state_file, device, dataloader, metrics):
 
     print("----- DONE ------")
 
-    return preds_list, label_list, f1_score, cfm
+    inference_time = time.time() - start_inference_time
+
+    return inference_time, f1_score, cfm

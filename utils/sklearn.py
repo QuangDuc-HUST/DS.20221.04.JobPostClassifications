@@ -5,10 +5,11 @@ import joblib
 from utils import general
 
 
-def train_model_predict(classifier,
-                        train_features,
-                        train_labels,
-                        val_features):
+def train_model(classifier,
+                train_features,
+                train_labels,
+                val_features,
+                val_labels):
     """
     Training model on the train set and,
     Validate the model on the validation set
@@ -21,9 +22,12 @@ def train_model_predict(classifier,
 
     print(f'Time to train {time_fit} second(s)')
 
+
     val_pred_label = classifier.predict(val_features)
 
-    return val_pred_label
+    f1_score, cfmatrix = general.get_eval_metrics(val_pred_label, val_labels)
+
+    return time_fit, f1_score, cfmatrix
 
 def save_model_sklearn(model, file_path):
     """
@@ -66,6 +70,12 @@ def inference_sklearn(file_path, x_raw_test):
 
 def get_evaluation_on_test_set(file_path, x_test, y_test):
 
+    start_inference_time = time.time()
+
     pred_label = inference_sklearn(file_path, x_test)
 
-    return general.get_eval_metrics(pred_label, y_test)
+    inference_time = time.time() - start_inference_time
+
+    f1_score, cfmatrix = general.get_eval_metrics(pred_label, y_test)
+
+    return inference_time, f1_score, cfmatrix
