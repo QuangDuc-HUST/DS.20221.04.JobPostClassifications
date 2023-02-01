@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- <link rel="shortcut icon" href="#"> -->
+    <link rel="stylesheet" type="text/css" href="static/css/main.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <title>Job Classification</title> 
+</head>
+<body>
+
+<!-- <p>Click on the "Choose File" button to upload a file:</p>
+<input  id="file" type="file" onchange="selectVideo(this);"> -->
+<div id="container" class="row">
+    <br>
+    <div style="float: left;width: 2.5%;padding: 15px;"></div>
+    
+    <div style="float: left;width: 2.5%;padding: 15px;"></div>
+    <div id="table1" class="column2">
+        <!-- <div id="nega">
+            <img src="static/img/nigga.png" alt="nigga 2 thumbs up" width="200" >
+            <p>Author</p>
+        </div> -->
+        <p>Enter your description here: </p>
+        <form method="POST" action="/predict" id="myForm" enctype="multipart/form-data">
+            <br>
+            <input id="description" name="description" type="text" form="myForm" style="margin: auto;">
+            <br>
+            <a href="/predict_result">
+                <br>
+                <input type="submit"/>
+            </a>
+        </form>
+        <br>
+        <p style="font-weight:bold"> Your description: </p>
+        <p>{{ des }}</p>
+        <table id="result">
+            <tr>
+                {% for header in heading %}
+                <th style="text-align: center;"> {{ header }} </th>
+                {% endfor %}
+            </tr>
+
+            {% for lb, s in res %}
+                <tr>
+                    <td> {{ lb }} </td>
+                    <td style="align-items: center; padding: 10px; width: 200px;">
+                        <!-- <div class="progress-bar" role="progressbar" aria-valuenow="{{s}}"
+                        aria-valuemin="0" aria-valuemax="100">
+                        {{s}} %
+                        </div> -->
+                        <div id="myturn">
+                            <span data-value="60" style="width: 60%;">{{s}}%</span>
+                            <progress value="{{s}}" max="100"></progress>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+
+        </table>
+    </div>
+
+    
+</div>
+
+</body>
+</html>
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+<script>
+</script>
