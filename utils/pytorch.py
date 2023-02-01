@@ -184,7 +184,7 @@ def train_model(model, device, train_dataloader, val_dataloader, metrics, criter
                     t.update()
                     
                 
-                f1_score, _ = metrics(preds_list, label_list)
+                f1_score, cfm = metrics(preds_list, label_list)
 
                 t.set_postfix(loss='{:05.3f}'.format(loss_val_sum / len(val_dataloader)))
                 
@@ -203,6 +203,8 @@ def train_model(model, device, train_dataloader, val_dataloader, metrics, criter
 
 
     print("----- DONE ------")
+
+    return f1_score, cfm
 
 
 

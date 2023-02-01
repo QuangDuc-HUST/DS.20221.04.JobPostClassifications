@@ -74,33 +74,6 @@ class JobBERTDataset(Dataset):
         }, torch.tensor(label, dtype=torch.long)
 
 
-class ComJobDataset(Dataset):
-
-   def __init__(self, x, y, tokenizer, seq_len, numeric_cols = []):
-
-      self.x = x
-      self.y = y 
-    
-      self.seq_len = seq_len
-
-      self.tokenizer = tokenizer
-      self.x_text = self.x['title']  + ' ' + self.x['description']
-      self.x_num = pd.get_dummies(self.x[numeric_cols]).to_numpy()
-
-
-   def __len__(self):
-      return len(self.y)
-      
-   def __getitem__(self, idx):
-
-      converted_text = self.tokenizer(self.x_text.iloc[idx], self.seq_len)
-      converted_numeric = self.x_num[idx]
-
-      label = self.y.iloc[idx]
-
-      return (converted_text, converted_numeric), label
-
-
 class ComJobBERTDataset(Dataset):
 
    def __init__(self, x, y, tokenizer, seq_len, numeric_cols = []):
