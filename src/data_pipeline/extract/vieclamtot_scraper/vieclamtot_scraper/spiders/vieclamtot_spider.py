@@ -6,6 +6,7 @@ from utils.utils import *
 class VieclamtotlinksSpider(scrapy.Spider):
 
     name = 'vieclamtot'
+    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
 
     configure_logging(install_root_handler=False, )
     logging.basicConfig(
@@ -15,7 +16,7 @@ class VieclamtotlinksSpider(scrapy.Spider):
         level=logging.INFO
     )
     
-    def __init__(self, end_page='100', **kwargs):
+    def __init__(self, end_page='250', **kwargs):
 
         self.found = True
         self.url = "https://www.vieclamtot.com/viec-lam" 
@@ -26,21 +27,18 @@ class VieclamtotlinksSpider(scrapy.Spider):
     def get_id_list(self):
 
         f = open('./constants/job_id.txt', 'r')
-        return [int(i.strip()) for i in f.readlines()]
+        return [str(i.strip()) for i in f.readlines()]
 
     def start_requests(self):
 
         for t in self.get_id_list(): 
             for p in range(self.end_page):
-                if self.found:
-                    yield scrapy.Request(self.url + "-sdjt" + str(t) + "?&page=" + str(p) + "&sp=0", callback=self.parse_links, meta={
-                        "download_timeout": 10,
-                        "max_retry_time": 1,
-                        'id': t
-                    })
-                    
-                else:
-                    break
+                yield scrapy.Request(self.url + "-" + t + "?&page=" + str(p) + "&sp=0", callback=self.parse_links, meta={
+                    "download_timeout": 10,
+                    "max_retry_time": 1,
+                    'id': int(t[t.find('sdjt') + 4 : ])
+                })
+
             
             self.found = True
 
@@ -52,17 +50,12 @@ class VieclamtotlinksSpider(scrapy.Spider):
 
     def parse_links(self, response):
 
-        # print(response.url)
+        # print(response)
         # print(response.url.split('?')[0])
         # f = open('./constants/job_id.txt', 'a')
 
-        if response.url.split('?')[0] == self.url:
-            self.found = False
-            return
-
         # f.write(str(response.meta['id']) + '\n')
         # f.close()
-        self.found = True
 
         links = response.xpath('//a[contains(@class, "AdItem_adItem")]/@href').getall()
 
@@ -75,6 +68,7 @@ class VieclamtotlinksSpider(scrapy.Spider):
                 yield scrapy.Request(link, callback=self._get_javascript_data, meta=response.meta)
 
     def _get_javascript_data(self, response):
+        # print(response)
 
         all_data = {}
         for script in response.xpath("//script").getall():
@@ -89,7 +83,7 @@ class VieclamtotlinksSpider(scrapy.Spider):
 
     def parse_job(self, response):
         try:
-
+            # print(response)
             itemvlt = ItemLoader(item=VieclamtotJobScraperItem())
             
             itemvlt.add_value('id', self.data['list_id'])
