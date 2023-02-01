@@ -78,8 +78,7 @@ class VieclamtotlinksSpider(scrapy.Spider):
         self.data = all_data["props"]["initialState"]["adView"]["adInfo"]["ad"]
         self.parameters = all_data["props"]["initialState"]["adView"]["adInfo"]["ad_params"]
         
-        if self.data["list_time"] < 1672506000 and self.data["list_time"] >= 1640970000:
-            yield self.parse_job(response)
+        yield self.parse_job(response)
 
     def parse_job(self, response):
         try:

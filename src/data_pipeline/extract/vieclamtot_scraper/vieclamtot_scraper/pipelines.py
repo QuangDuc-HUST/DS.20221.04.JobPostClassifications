@@ -21,14 +21,24 @@ class VieclamtotScraperLoadPipeline:
     def open_spider(self, spider):
         self.n_job = 0
 
-        self.job = []
+        self.job = dict()
+
 
     def process_item(self, item, spider):
-        print(dict(item))
-        self.job.append(dict(item))
+        # print(dict(item))
+
+        post_time = dict(item)['post_time']
+        post_year = datetime.strptime(post_time, '%Y-%m-%d %H:%M:%S').year
+        print(post_year)
+
+        if post_year not in self.job.keys():
+            self.job[post_year] = []
+
+        self.job[post_year].append(dict(item))
     
     def close_spider(self, spider):
-        json.dump(self.job, open('./../../transform/staging/staging_vieclamtot.json', 'w'))
+        for k in self.job.keys():
+            json.dump(self.job[k], open(f'./../../transform/staging/staging_vieclamtot_{k}.json', 'w'))
 
 
 class VieclamtotScraperPreprocessPipeline:

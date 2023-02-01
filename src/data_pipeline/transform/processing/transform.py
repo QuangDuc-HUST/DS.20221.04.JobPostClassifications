@@ -6,7 +6,7 @@ import traceback
 
 def transform_vl24h(transform_company, transform_job):
 
-    vl24h = open('./staging/staging_vieclam24h.json', 'r')
+    vl24h = open('./staging/staging_vieclam24h_2022.json', 'r')
     vl24h = json.load(vl24h)
 
     for i in range(len(vl24h)):
@@ -63,7 +63,7 @@ def transform_vl24h(transform_company, transform_job):
 
 def transform_vlt(transform_company, transform_job):
 
-    vlt = open('./staging/staging_vieclamtot.json', 'r')
+    vlt = open('./staging/staging_vieclamtot_2021.json', 'r')
     vlt = json.load(vlt)
 
     for i in range(len(vlt)):
@@ -129,13 +129,13 @@ def transform_data():
     transform_company = []
     transform_job = []
 
-    transform_company, transform_job = transform_vl24h(transform_company, transform_job)
+    # transform_company, transform_job = transform_vl24h(transform_company, transform_job)
     transform_company, transform_job = transform_vlt(transform_company, transform_job)
 
-    transform_file = open('../load/data/company.json', 'w')
+    transform_file = open('../load/data/company_vlt_2021.json', 'w')
     json.dump(transform_company, transform_file, indent=4)
 
-    transform_file = open('../load/data/job.json', 'w')
+    transform_file = open('../load/data/job_vlt_2021.json', 'w')
     json.dump(transform_job, transform_file, indent=4)
 
 transform_data()

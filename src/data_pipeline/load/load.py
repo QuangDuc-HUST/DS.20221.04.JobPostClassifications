@@ -16,7 +16,7 @@ ENDPOINT="database-ds.cekjcsqlwwiv.ap-northeast-1.rds.amazonaws.com"
 PORT="5432"
 USER="postgres"
 PASSWORD="postgres"
-DBNAME="jobs_2022"
+# DBNAME="JOBS"
 
 #gets the credentials from .aws/credentials
 # session = boto3.Session(profile_name='RDSCreds')
@@ -27,7 +27,7 @@ DBNAME="jobs_2022"
 
 def load_job(conn, cur):
 
-    with open('./data/job.json') as file:
+    with open('./data/job_vlt_2022.json') as file:
         # change json.load(file) to file.read()
         data = file.read()
         
@@ -44,7 +44,7 @@ def load_job(conn, cur):
 
 def load_company(conn, cur):
 
-    with open('./data/company.json') as file:
+    with open('./data/company_vlt_2022.json') as file:
         # change json.load(file) to file.read()
         data = file.read()
     # cur.execute("truncate table COMPANY")
@@ -63,12 +63,12 @@ conn = None
 cur = None
 
 try:
-    conn = psycopg2.connect(host=ENDPOINT, port=PORT, database=DBNAME, user=USER, password=PASSWORD)
+    conn = psycopg2.connect(host=ENDPOINT, port=PORT, user=USER, password=PASSWORD)
     conn.autocommit = True
     cur = conn.cursor()
 
-    # cur.execute("select * from JOB limit 1 ")
-    # print(cur.fetchall())
+    cur.execute('SELECT datname FROM pg_database;')
+    print(cur.fetchall())
 
 
     # cur.execute("alter table JOB add updated_time1 timestamp")

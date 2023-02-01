@@ -78,9 +78,7 @@ class Vieclam24hSpider(scrapy.Spider):
 
         # return job_detail, employer_detail, parameters, data
         # if self.job_detail['updated_at'] >= 1672506000:
-        if self.job_detail['updated_at'] >= 1640970000 and self.job_detail['updated_at'] < 1672506000:
-            print(self.job_detail['updated_at'])
-            yield self.parse_job(response)
+        yield self.parse_job(response)
 
     def parse_job(self, response):
         try:
