@@ -136,3 +136,4 @@ log_record*.txt
 !configuration/*.json
 
 wandb
+*.pth
