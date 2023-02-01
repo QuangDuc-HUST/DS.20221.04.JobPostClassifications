@@ -2,7 +2,7 @@ import time
 import os
 import joblib
 
-import general
+from utils import general
 
 
 def train_model_predict(classifier,
