@@ -121,7 +121,7 @@ class ComJobBERTDataset(Dataset):
    def __getitem__(self, idx):
         
     text = self.x_text.iloc[idx]
-    numeric = self.x_num.iloc[idx]
+    numeric = self.x_num[idx]
 
     label = self.y.iloc[idx]
 
