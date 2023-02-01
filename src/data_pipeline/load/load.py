@@ -16,7 +16,7 @@ ENDPOINT="database-ds.cekjcsqlwwiv.ap-northeast-1.rds.amazonaws.com"
 PORT="5432"
 USER="postgres"
 PASSWORD="postgres"
-DBNAME="JOBS"
+DBNAME="jobs_2022"
 
 #gets the credentials from .aws/credentials
 # session = boto3.Session(profile_name='RDSCreds')
@@ -67,8 +67,9 @@ try:
     conn.autocommit = True
     cur = conn.cursor()
 
-    cur.execute("select count(*) from JOB where extract(epoch from post_time) < 1672506000")
-    print(cur.fetchall())
+    # cur.execute("select * from JOB limit 1 ")
+    # print(cur.fetchall())
+
 
     # cur.execute("alter table JOB add updated_time1 timestamp")
     # cur.execute("update JOB set updated_time1 = to_timestamp(updated_time, 'DD/MM/YYYY HH24:MI:SS')")

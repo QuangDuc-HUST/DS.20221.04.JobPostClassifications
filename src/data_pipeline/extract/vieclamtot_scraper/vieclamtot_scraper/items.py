@@ -9,7 +9,7 @@ sys.path.append("..")
 
 
 def unix_to_human_time(text: str):
-    return datetime.utcfromtimestamp(int(text) // 1000).strftime('%d/%m/%Y %H:%M:%S')
+    return datetime.utcfromtimestamp(int(text) // 1000).strftime('%Y-%m-%d %H:%M:%S')
 
 
 def process_num(num):

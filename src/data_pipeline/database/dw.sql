@@ -1,5 +1,12 @@
 -- drop table JOB if exists;
-
+create table COMPANY (
+    id int,
+    name varchar(200),
+    coordinate varchar(50),
+    address text,
+    region varchar(50),
+    constraint pk_company primary key(id)
+);
 create table JOB (
     id int not null,
     company_id int not null,
@@ -23,18 +30,11 @@ create table JOB (
     contract_type varchar(100),
     education_requirements text,
     experience_requirements text,
-    constraint pk_job primary key(id, company_id)
+    constraint pk_job primary key(id, company_id),
     constraint fk_company_id foreign key(company_id) references COMPANY(id)
 );
 
 -- drop table COMPANY if exists;
 
-create table COMPANY (
-    id int,
-    name varchar(200),
-    coordinate varchar(50),
-    address text,
-    region varchar(50),
-    constraint pk_company primary key(id)
-);
+
 

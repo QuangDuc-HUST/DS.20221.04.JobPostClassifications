@@ -14,7 +14,7 @@ def lowercase(text: str):
 
 
 def unix_to_human_time(text: str):
-    return datetime.utcfromtimestamp(int(text)).strftime('%d/%m/%Y %H:%M:%S')
+    return datetime.utcfromtimestamp(int(text)).strftime('%Y-%m-%d %H:%M:%S')
 
 
 def remove_nbps(text: str):
