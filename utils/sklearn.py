@@ -23,6 +23,7 @@ def train_model(classifier,
     print(f'Time to train: {time_fit} second(s)')
 
 
+    print("Metrics on validation set")
     val_pred_label = classifier.predict(val_features)
 
     f1_score, cfmatrix = general.get_eval_metrics(val_pred_label, val_labels)

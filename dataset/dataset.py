@@ -21,7 +21,6 @@ class JobDataset(Dataset):
       return text, label
 
 
-
 class JobBERTDataset(Dataset):
 
     def __init__(self, df_x, df_y, tokenizer, max_len):
