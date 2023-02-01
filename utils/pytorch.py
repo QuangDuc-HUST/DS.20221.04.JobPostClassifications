@@ -54,8 +54,7 @@ def to_device(vari, device, **kwargs):
     elif isinstance(vari, list):
         new_vari = []
         for ten in vari:
-          new_vari.append(ten.to(device, **kwargs))
-
+          new_vari.append(to_device(ten, device,  **kwargs))
         return new_vari
 
     return vari.to(device, **kwargs)
