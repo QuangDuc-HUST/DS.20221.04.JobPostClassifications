@@ -5,10 +5,10 @@ from torch import nn
 
 #https://towardsdatascience.com/how-to-combine-textual-and-numerical-features-for-machine-learning-in-python-dc1526ca94d9
 
-class CombinationCNNModel(nn.ModuleList):
+class ComCNNModel(nn.ModuleList):
 
     def __init__(self, seq_len, num_words,  embedding_size, out_size, stride, in_dimensions, dense_size, num_class):
-        super(CombinationCNNModel, self).__init__()
+        super(ComCNNModel, self).__init__()
 
         # Parameters regarding text preprocessing
         self.seq_len = seq_len
