@@ -40,7 +40,7 @@ class Vieclam24HScraperLoadPipeline:
         self.job = []
 
     def process_item(self, item, spider):
-        print(dict(item))
+        # print(dict(item))
         self.job.append(dict(item))
     
     def close_spider(self, spider):

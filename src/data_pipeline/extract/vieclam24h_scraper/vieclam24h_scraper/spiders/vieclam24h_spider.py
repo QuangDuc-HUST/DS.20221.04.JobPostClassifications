@@ -13,10 +13,9 @@ class Vieclam24hSpider(scrapy.Spider):
         level=logging.INFO
     )
 
-    def __init__(self, end_page='40', **kwargs):
+    def __init__(self, **kwargs):
 
         self.url = "https://vieclam24h.vn/tim-kiem-viec-lam-nhanh"
-        self.end_page = int(end_page)
         self.metadata = None
         self.first_item = True
 
@@ -24,8 +23,17 @@ class Vieclam24hSpider(scrapy.Spider):
 
     def start_requests(self):
         for t in range(1, 36): 
+
+            r = requests.get("https://vieclam24h.vn/tim-kiem-viec-lam-nhanh?occupation_ids[]=" + str(t))
+            soup = BeautifulSoup(r.content, "html.parser")  
+            dom = etree.HTML(str(soup)) 
+            pages = dom.xpath('//*[@id="__next"]/div/main/div/div/div/div[1]/div[1]/div/div[1]/span')[0].text
+            self.end_page = int(pages.replace(',', ''))//30 + 2
+
+            print(self.end_page)
+
             for p in range(self.end_page):
-                yield scrapy.Request(self.url + "?field_ids[]=" + str(t) + "&page=" + str(p), callback=self.parse_links, meta={
+                yield scrapy.Request(self.url + "?occupation_ids[]=" + str(t) + "&page=" + str(p), callback=self.parse_links, meta={
                     "download_timeout": 10,
                     "max_retry_time": 1,
                     'job_type_id': t
@@ -69,7 +77,8 @@ class Vieclam24hSpider(scrapy.Spider):
         # self.first_item = False
 
         # return job_detail, employer_detail, parameters, data
-        if self.job_detail['updated_at'] >= 1672506000:
+        # if self.job_detail['updated_at'] >= 1672506000:
+        if self.job_detail['updated_at'] >= 1640970000 and self.job_detail['updated_at'] < 1672506000:
             print(self.job_detail['updated_at'])
             yield self.parse_job(response)
 

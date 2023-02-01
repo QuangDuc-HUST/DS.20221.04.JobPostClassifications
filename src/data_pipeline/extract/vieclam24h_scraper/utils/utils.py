@@ -8,6 +8,9 @@ from scrapy.loader import ItemLoader
 import logging
 from scrapy.utils.log import configure_logging
 import traceback
+import requests
+from bs4 import BeautifulSoup
+from lxml import etree
 
 def preprocess(self, link):
         return urljoin(self.url, link)
