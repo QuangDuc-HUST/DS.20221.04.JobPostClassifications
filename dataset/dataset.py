@@ -74,6 +74,8 @@ class JobBERTDataset(Dataset):
         }, torch.tensor(label, dtype=torch.long)
 
 
+
+
 class ComJobBERTDataset(Dataset):
 
    def __init__(self, x, y, tokenizer, seq_len, numeric_cols = []):
@@ -81,7 +83,7 @@ class ComJobBERTDataset(Dataset):
       self.x = x
       self.y = y 
     
-      self.seq_len = seq_len
+      self.max_len = seq_len
 
       self.tokenizer = tokenizer
       self.x_text = self.x['title'] + ' ' + self.x['description']
