@@ -10,6 +10,8 @@ def transform_vl24h(transform_company, transform_job):
     vl24h = json.load(vl24h)
 
     for i in range(len(vl24h)):
+        if vl24h[i]['job_type'] == 'Công việc khác':
+            continue
         try:
             temp_item = {}
             temp_item['id'] = vl24h[i]['company_id']
@@ -67,6 +69,8 @@ def transform_vlt(transform_company, transform_job):
     vlt = json.load(vlt)
 
     for i in range(len(vlt)):
+        if vlt[i]['job_type'] == 'Công việc khác':
+            continue
         try:
             temp_item = {}
             # print(vlt[i].keys())

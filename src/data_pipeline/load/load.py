@@ -16,7 +16,7 @@ ENDPOINT="database-ds.cekjcsqlwwiv.ap-northeast-1.rds.amazonaws.com"
 PORT="5432"
 USER="postgres"
 PASSWORD="postgres"
-# DBNAME="JOBS"
+DBNAME="jobs_2023"
 
 #gets the credentials from .aws/credentials
 # session = boto3.Session(profile_name='RDSCreds')
@@ -63,12 +63,12 @@ conn = None
 cur = None
 
 try:
-    conn = psycopg2.connect(host=ENDPOINT, port=PORT, user=USER, password=PASSWORD)
+    conn = psycopg2.connect(host=ENDPOINT, port=PORT, database=DBNAME, user=USER, password=PASSWORD)
     conn.autocommit = True
     cur = conn.cursor()
 
-    cur.execute('SELECT datname FROM pg_database;')
-    print(cur.fetchall())
+    # cur.execute("delete from COMPANY where id not in (select company_id from JOB) ")
+    # print(cur.fetchall())
 
 
     # cur.execute("alter table JOB add updated_time1 timestamp")
