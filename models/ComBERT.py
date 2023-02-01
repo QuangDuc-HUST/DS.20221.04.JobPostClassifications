@@ -19,8 +19,12 @@ class ComPhoBERTModel(nn.Module):
         self.fc_1 = nn.Linear(self.bert.config.hidden_size, self.dense_size)
         self.fc_2 = nn.Linear(self.dense_size + self.in_dimensions , num_classes)
 
-        nn.init.normal_(self.fc.weight, std=0.02)
-        nn.init.normal_(self.fc.bias, 0)
+        nn.init.normal_(self.fc_1.weight, std=0.02)
+        nn.init.normal_(self.fc_1.bias, 0)
+
+        nn.init.normal_(self.fc_2.weight, std=0.02)
+        nn.init.normal_(self.fc_2.bias, 0)
+
 
     def forward(self, x_batch):
         
