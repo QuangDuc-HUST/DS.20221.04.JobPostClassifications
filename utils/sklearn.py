@@ -20,7 +20,7 @@ def train_model(classifier,
 
     time_fit = time.time() - start_time
 
-    print(f'Time to train {time_fit} second(s)')
+    print(f'Time to train: {time_fit} second(s)')
 
 
     val_pred_label = classifier.predict(val_features)
@@ -77,5 +77,8 @@ def get_evaluation_on_test_set(file_path, x_test, y_test):
     inference_time = time.time() - start_inference_time
 
     f1_score, cfmatrix = general.get_eval_metrics(pred_label, y_test)
+
+    print(f'Time to predict: {inference_time} second(s)')
+
 
     return inference_time, f1_score, cfmatrix

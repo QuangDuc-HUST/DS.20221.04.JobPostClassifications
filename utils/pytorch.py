@@ -210,6 +210,8 @@ def train_model(model, device, train_dataloader, val_dataloader, metrics, criter
 
     training_time = time.time() - start_training_time
 
+    print(f'Time to train: {training_time} second(s)')
+
     return training_time, best_f1_metric, best_cf_metric
 
 
@@ -260,5 +262,8 @@ def evaluate_model(model_architecure, state_file, device, dataloader, metrics):
     print("----- DONE ------")
 
     inference_time = time.time() - start_inference_time
+
+    print(f'Time to predict: {inference_time} second(s)')
+
 
     return inference_time, f1_score, cfm
