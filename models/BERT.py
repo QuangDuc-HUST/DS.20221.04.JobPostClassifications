@@ -1,8 +1,9 @@
+# Source https://www.kaggle.com/trnmtin/phobert-classification-for-vietnamese-text
+
 from transformers import AutoModel
 
 from torch import nn
 
-# Source
 
 class PhoBERTModel(nn.Module):
   

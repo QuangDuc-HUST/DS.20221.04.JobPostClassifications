@@ -1,9 +1,10 @@
+# Source code: https://github.com/FernandoLpz/Text-Classification-CNN-PyTorch
+
 import math
 
 import torch
 from torch import nn
 
-## Source code:https://github.com/FernandoLpz/Text-Classification-CNN-PyTorch
 
 class CNNModel(nn.ModuleList):
 

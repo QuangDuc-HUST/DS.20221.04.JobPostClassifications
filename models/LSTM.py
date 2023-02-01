@@ -1,4 +1,4 @@
-## Source: https://github.com/FernandoLpz/Text-Classification-LSTMs-PyTorch
+# Source: https://github.com/FernandoLpz/Text-Classification-LSTMs-PyTorch
 
 import torch
 from torch import nn

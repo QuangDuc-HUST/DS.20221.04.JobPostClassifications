@@ -58,28 +58,23 @@ def load_model_sklearn(file_path):
     return model
 
 
-def inference_sklearn(file_path, x_raw_test):
+def get_evaluation_on_test_set(file_path, x_test, y_test):
     """
-    load the model and predict the raw data test: one instance, return model and prediction label
+    load the model and predict the raw data test: time, f1_score, cfmatrix
     """
+
     model = load_model_sklearn(file_path)
 
-    prediction = model.predict(x_raw_test)
-
-    return prediction
-
-
-def get_evaluation_on_test_set(file_path, x_test, y_test):
+    
 
     start_inference_time = time.time()
 
-    pred_label = inference_sklearn(file_path, x_test)
+    prediction = model.predict(x_test)
 
     inference_time = time.time() - start_inference_time
 
-    f1_score, cfmatrix = general.get_eval_metrics(pred_label, y_test)
+    f1_score, cfmatrix = general.get_eval_metrics(prediction, y_test)
 
     print(f'Time to predict: {inference_time} second(s)')
-
 
     return inference_time, f1_score, cfmatrix

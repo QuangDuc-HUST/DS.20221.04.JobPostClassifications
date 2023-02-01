@@ -217,7 +217,6 @@ def train_model(model, device, train_dataloader, val_dataloader, metrics, criter
 
 def evaluate_model(model_architecure, state_file, device, dataloader, metrics):
 
-    start_inference_time = time.time()    
 
     print(f"Evaluating on test set ...")
   
@@ -233,6 +232,8 @@ def evaluate_model(model_architecure, state_file, device, dataloader, metrics):
 
     preds_list = []
     label_list = []
+
+    start_inference_time = time.time()    
 
     with torch.no_grad():
         with tqdm(total=len(dataloader)) as t:
@@ -256,12 +257,13 @@ def evaluate_model(model_architecure, state_file, device, dataloader, metrics):
                 t.update()
                 
             
+            inference_time = time.time() - start_inference_time
+
             f1_score, cfm = metrics(preds_list, label_list)
             
 
     print("----- DONE ------")
 
-    inference_time = time.time() - start_inference_time
 
     print(f'Time to predict: {inference_time} second(s)')
 

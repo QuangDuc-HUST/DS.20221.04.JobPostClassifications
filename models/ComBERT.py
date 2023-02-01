@@ -1,9 +1,11 @@
+# Refer to https://towardsdatascience.com/how-to-combine-textual-and-numerical-features-for-machine-learning-in-python-dc1526ca94d9
+
+
 from transformers import AutoModel
 
 import torch
 from torch import nn
 
-# Source
 
 class ComPhoBERTModel(nn.Module):
   
