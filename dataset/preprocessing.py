@@ -136,7 +136,7 @@ class NonTextDataPreprocess():
         old_value = self.dic[column_name]
         if old_value is None: 
             old_value = handle_missing
-        self.dic[column_name] = col_dict.get(old_value, old_value)
+        self.result_dic[column_name] = col_dict.get(old_value, old_value)
         
         
     def __convert_age(self):       
