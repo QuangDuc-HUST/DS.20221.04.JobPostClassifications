@@ -89,10 +89,10 @@ class NonTextDataPreprocess():
         '''
         self.__convert_age()
 
-        self.__convert_column('education_requirements', self.convert_edu)
-        self.__convert_column('experience_requirements', self.convert_exp)
-        self.__convert_column('contract_type', self.convert_contract)
-        self.__convert_column('salary_type', self.convert_salary_type)
+        self.__convert_column('education_requirements', self.convert_edu, 'Không yêu cầu')
+        self.__convert_column('experience_requirements', self.convert_exp, 'Không yêu cầu')
+        self.__convert_column('contract_type', self.convert_contract, 'Fulltime')
+        self.__convert_column('salary_type', self.convert_salary_type, 'monthly')
         
         self.__normalized_column('min_salary', self.min_salary_lmbda, self.mean_min_salary)
         self.__normalized_column('max_salary', self.max_salary_lmbda, self.mean_max_salary)
