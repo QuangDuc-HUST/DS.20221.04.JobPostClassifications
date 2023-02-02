@@ -68,7 +68,7 @@ def process_text_sentence(string, is_title=False):
     result = uts.text_normalize(result)
     if not is_title:
         result = remove_stopword(result)
-        
+
     return result
 
 class NonTextDataPreprocess():
@@ -132,9 +132,12 @@ class NonTextDataPreprocess():
 
         self.result_dic[f'normalized_{column_name}'] = (x** lmbda - 1) /lmbda
 
-    def __convert_column(self, column_name:str, col_dict: dict):    #oce
+    def __convert_column(self, column_name:str, col_dict: dict, handle_missing: str):    #oce
         old_value = self.dic[column_name]
-        self.result_dic[column_name] = col_dict.get(old_value, old_value)
+        if old_value is None: 
+            old_value = handle_missing
+        self.dic[column_name] = col_dict.get(old_value, old_value)
+        
         
     def __convert_age(self):       
                  #oce
