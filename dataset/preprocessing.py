@@ -2,6 +2,7 @@ import os
 import re
 import json
 import underthesea as uts
+import numpy as np
 
 VIETNAMESE_STOPWORD = []
 
@@ -134,7 +135,7 @@ class NonTextDataPreprocess():
 
     def __convert_column(self, column_name:str, col_dict: dict, handle_missing: str):    #oce
         old_value = self.dic[column_name]
-        if old_value is None: 
+        if old_value is np.nan: 
             old_value = handle_missing
         self.result_dic[column_name] = col_dict.get(old_value, old_value)
         
