@@ -77,7 +77,7 @@ class JobBERTDataset(Dataset):
 
 class ComJobBERTDataset(Dataset):
 
-   def __init__(self, x, y, tokenizer, seq_len, numeric_cols = []):
+   def __init__(self, x, y, tokenizer, seq_len, num_cols = []):
 
       self.x = x
       self.y = y 
@@ -86,7 +86,7 @@ class ComJobBERTDataset(Dataset):
 
       self.tokenizer = tokenizer
       self.x_text = self.x['title'] + ' ' + self.x['description']
-      self.x_num = self.x[numeric_cols].to_numpy()
+      self.x_num = self.x[num_cols].to_numpy()
 
 
    def __len__(self):
@@ -114,5 +114,5 @@ class ComJobBERTDataset(Dataset):
     return ({
         'input_ids': encoding['input_ids'].flatten(),
         'attention_masks': encoding['attention_mask'].flatten(),
-    }, numeric), torch.tensor(label, dtype=torch.long)
+    }, torch.tensor(numeric, dtype=torch.float)), torch.tensor(label, dtype=torch.long)
 
