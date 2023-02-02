@@ -1,4 +1,3 @@
-
 import torch
 
 from transformers import logging
@@ -40,7 +39,7 @@ def predict(input_dict, weight_path, config_file, **kwargs):
 
 if __name__ == '__main__':
     test_input_description_only = {"description": "- Am hiểu phần mềm Misa - Ưu tiên các ứng viên mới ra trường , chịu khó , có đào tạo thêm nghiệp vụ chuyên môn - Làm việc toàn thời gian tại công ty , môi trường thông thoáng - Thành thạo  nghiệp vụ kế toán tổng hợp - Ưu tiên nhà ở Củ Chi hoặc Hóc Môn để tiện di chuyển - Chế độ làm việc rõ ràng , chăm sóc đời sống nhân viên và gia đình"}
-    output = predict(test_input_description_only, 'weights/BERTweights.pth')
+    output = predict(test_input_description_only, 'weights/BERTweights.pth', "config.json")
 
     idx2label = utils.get_idx2label()
 

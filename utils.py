@@ -1,6 +1,5 @@
 import os
 import json
-import shutil
 
 from sklearn.metrics import f1_score, confusion_matrix
 
