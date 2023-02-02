@@ -23,9 +23,15 @@ def process_input(user_input, max_len_text):
 
     assert isinstance(user_input, dict), "Not corrected type."
 
-    # Check if there is any missing value
-    for value in user_input.values():
-        assert value is not None, "There is none value in user input" # Not input all fields
+    assert user_input["description"] is None or user_input["title"] is None, "There is none value in description and title field" # Not input all fields
+    
+    # Check if other field is None
+    is_none_all = True
+    for key, value in  user_input.items():
+        if value is not None:
+            is_none_all = False
+            break
+    
 
     tokenizer =  AutoTokenizer.from_pretrained("vinai/phobert-base", use_fast=False)
 
@@ -35,7 +41,7 @@ def process_input(user_input, max_len_text):
     processed_text_field = process_text_sentence(text_field, tokenizer, max_len_text)
     
 
-    if len(user_input) == 2:
+    if is_none_all:
         # Only text fields
         processed_numeric_field = None
     
