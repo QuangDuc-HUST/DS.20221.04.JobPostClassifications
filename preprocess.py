@@ -51,8 +51,6 @@ def process_input(user_input, max_len_text):
 
         preprocess_numeric_input = nontextpreprocess.run()
 
-        print(sorted(preprocess_numeric_input.keys()))
-
         processed_numeric_field = torch.tensor([preprocess_numeric_input[key] for key in sorted(preprocess_numeric_input.keys())]).unsqueeze(0)
 
 
@@ -160,7 +158,7 @@ class NonTextDataPreprocess():
         '''
         self.__convert_age()
 
-        # self.__convert_column('education_requirements', self.convert_edu, 'Không yêu cầu')
+        self.__convert_column('education_requirements', self.convert_edu, 'Không yêu cầu')
         self.__convert_column('experience_requirements', self.convert_exp, 'Không yêu cầu')
         self.__convert_column('contract_type', self.convert_contract, 'Fulltime')
         self.__convert_column('salary_type', self.convert_salary_type, 'monthly')
