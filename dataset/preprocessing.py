@@ -3,16 +3,14 @@ import re
 import json
 import underthesea as uts
 
+VIETNAMESE_STOPWORD = []
+
+with open(os.path.join("auxiliary", "vietnamese-stopwords.txt" ), encoding="utf-8") as f:
+    VIETNAMESE_STOPWORD = [word.strip() for word in f.readlines()]
 
 # Text Data Preprocess (Processing Test Data)
-def process_text_sentence(string):
-
-    VIETNAMESE_STOPWORD = []
-
-    with open(os.path.join("auxiliary", "vietnamese-stopwords.txt" ), encoding="utf-8") as f:
-        VIETNAMESE_STOPWORD = [word.strip() for word in f.readlines()]
-
-
+def process_text_sentence(string, is_title=False):
+    
     def split_word(string):
         new_string = ''
         for i in range(len(string) - 1):
@@ -68,9 +66,10 @@ def process_text_sentence(string):
     result = clean_str(result)
     result = remove_url(result)
     result = uts.text_normalize(result)
-    result = remove_stopword(result)
-
-# Non Text Data Preprocess
+    if not is_title:
+        result = remove_stopword(result)
+        
+    return result
 
 class NonTextDataPreprocess():
 
