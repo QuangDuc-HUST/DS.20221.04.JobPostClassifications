@@ -2,9 +2,6 @@
 import torch
 from torch.utils.data import Dataset
 
-import pandas as pd
-
-
 class JobDataset(Dataset):
 
    def __init__(self, x, y):
