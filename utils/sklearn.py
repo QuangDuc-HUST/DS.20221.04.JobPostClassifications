@@ -65,7 +65,6 @@ def get_evaluation_on_test_set(file_path, x_test, y_test):
 
     model = load_model_sklearn(file_path)
 
-    
 
     start_inference_time = time.time()
 

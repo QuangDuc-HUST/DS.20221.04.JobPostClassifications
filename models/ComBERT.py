@@ -36,7 +36,7 @@ class ComPhoBERTModel(nn.Module):
 
         input_ids = x_text['input_ids']
         attention_masks = x_text['attention_masks']        
-
+        
         _, output = self.bert(
             input_ids=input_ids,
             attention_mask=attention_masks,
