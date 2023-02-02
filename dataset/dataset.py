@@ -86,7 +86,7 @@ class ComJobBERTDataset(Dataset):
 
       self.tokenizer = tokenizer
       self.x_text = self.x['title'] + ' ' + self.x['description']
-      self.x_num = pd.get_dummies(self.x[numeric_cols]).to_numpy()
+      self.x_num = self.x[numeric_cols].to_numpy()
 
 
    def __len__(self):
