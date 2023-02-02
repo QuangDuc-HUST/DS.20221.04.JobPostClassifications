@@ -1,3 +1,6 @@
+import os
+
+
 import re
 import underthesea as uts
 from transformers import AutoTokenizer, logging
@@ -8,7 +11,7 @@ def process_text_sentence(string, tokenizer, max_len):
 
     VIETNAMESE_STOPWORD = []
 
-    with open("vietnamese-stopwords.txt", encoding="utf-8") as f:
+    with open(os.path.join("auxiliary", "vietnamese-stopwords.txt" ), encoding="utf-8") as f:
         VIETNAMESE_STOPWORD = [word.strip() for word in f.readlines()]
 
 

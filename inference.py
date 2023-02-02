@@ -8,9 +8,9 @@ from model import BERTJob
 
 import utils
 import preprocess
+from config import Config
 
-
-def predict(input_dict, weight_path, **kwargs):
+def predict(input_dict, weight_path, config_file, **kwargs):
     """
     Input:
 
@@ -20,15 +20,13 @@ def predict(input_dict, weight_path, **kwargs):
     
     """
 
-    NUM_CLASSES = 37
-    MAX_LEN = 125
+    config = Config(config_file)
 
-
-    model = BERTJob(num_classes=NUM_CLASSES, **kwargs)
+    model = BERTJob(num_classes=config("NUM_CLASSES"), **kwargs)
 
     utils.load_checkpoint(weight_path, model, map_location=torch.device('cpu'))
 
-    features = preprocess.process_input(input_dict, MAX_LEN)
+    features = preprocess.process_input(input_dict, config("MAX_LEN"))
 
     model.eval()
 
