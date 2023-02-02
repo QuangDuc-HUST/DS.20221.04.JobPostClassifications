@@ -70,7 +70,6 @@ class ComPhoBERTModel(nn.Module):
 
         dense_out = self.fc_1(x)
 
-
         concat_layer = torch.concat([dense_out, x_num], dim=1)
 
         print(concat_layer.shape)
