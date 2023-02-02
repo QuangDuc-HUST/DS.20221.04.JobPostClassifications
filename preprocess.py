@@ -1,6 +1,6 @@
 import os
-
-
+import json
+import torch
 import re
 import underthesea as uts
 from transformers import AutoTokenizer, logging
@@ -83,13 +83,14 @@ def process_text_sentence(string, tokenizer, max_len):
             return_tensors='pt',
         )
 
+    return result
     return  {
             'input_ids': encoding['input_ids'].flatten().unsqueeze(0),
             'attention_masks': encoding['attention_mask'].flatten().unsqueeze(0),
         }
 
 
-def process_input(user_input, max_len):
+def process_input(user_input, max_len_text):
     """
     Input:
 
@@ -97,20 +98,180 @@ def process_input(user_input, max_len):
 
     """
 
+    assert isinstance(user_input, dict), "Not corrected type."
+
+    # Check if there is any missing value
+    for value in user_input.values():
+        assert value is not None, "There is none value in user input"
+
     tokenizer =  AutoTokenizer.from_pretrained("vinai/phobert-base", use_fast=False)
 
+    preprocess_object = DataPreprocess(user_input, tokenizer, max_len_text)
 
-    description_field = user_input["description"]
+    preprocess_user_input = preprocess_object.run()
 
-    processed_description_field = process_text_sentence(description_field, tokenizer, max_len)
+    text_field =  user_input["title"] + " " + user_input["description"] 
+
+    processed_text_field = process_text_sentence(text_field, tokenizer, max_len_text)
     
-    processed_input = processed_description_field
+
+    if len(user_input) == 2:
+        # Only text fields
+        processed_numeric_field = None
+    
+    else:
+        processed_numeric_field = torch.tensor([user_input[key] for key in user_input.keys() if key not in ["title" , "description"]]).unsqueeze(0)
+
+    processed_input = processed_text_field, processed_numeric_field 
 
     return processed_input
 
+class DataPreprocess():
+
+    def __init__(self, inputs: dict(), tokenizer, max_len, param_file='auxiliary/mapping_dict.json'): 
+        self.dic = inputs
+        self.tokenizer = tokenizer
+        self.max_len = max_len
+
+        self.__loading_data(param_file)
+        self.__threshold_salary = 1200000  # 1,200,000
+
+    def run(self): 
+        '''
+        Magic. 
+        Cleaning, pre-processing data
+        Return: dict()
+        '''
+        self.__convert_age()
+
+        self.__convert_column('education_requirements', self.convert_edu)
+        self.__convert_column('experience_requirements', self.convert_exp)
+        self.__convert_column('contract_type', self.convert_contract)
+        self.__convert_column('salary_type', self.convert_salary_type)
+        
+        self.__normalized_column('min_salary', self.min_salary_lmbda, self.mean_min_salary)
+        self.__normalized_column('max_salary', self.max_salary_lmbda, self.mean_max_salary)
+        self.__normalized_column('vacancies', self.vacancies_lmbda, 1)
+        
+        self.__encode_column('description')
+        self.__encode_column('title')
+        
+        self.__encode_location()
+
+        return self.dic
+        
+    def __loading_data(self, param_file: str): 
+        with open(param_file, encoding='utf-8') as json_file:
+            data = json.load(json_file)
+            
+            # Load dictionaries and data structures
+            self.convert_contract = data['CONTRACT_TYPE_DICT']
+            self.convert_salary_type = data['SALARY_TYPE_CONVERTER']
+            self.convert_edu = data['EDUCATION_REQUIREMENTS_CONVERTER']
+            self.convert_exp = data['EXPERIENCE_REQUIREMENTS_CONVERTER']
+
+            self.regions = data['regions']
+            self.location_convert_dict = data['LOCATION_CONVERTER']
+            
+            # Load parameters
+            self.min_salary_lmbda = data['min_salary_lmbda']
+            self.max_salary_lmbda = data['max_salary_lmbda']
+            self.vacancies_lmbda = data['vacancies_lmbda']
+            self.mean_min_salary = data['mean_min_salary']
+            self.mean_max_salary = data['mean_max_salary']
+
+    def __normalized_column(self, column_name, lmbda, mean):        #oce
+        assert type(self.dic[column_name]) == int, f'Type {column_name} is not integer (int)'
+        x = self.dic[column_name]
+        if 'salary' in column_name:  
+            x = x if x > self.__threshold_salary else mean 
+        else: 
+            x = max(x, 1)
+        self.dic[f'normalized_{column_name}'] = (x** lmbda - 1) /lmbda
+
+    def __convert_column(self, column_name:str, col_dict: dict):    #oce
+        old_value = self.dic[column_name]
+        self.dic[column_name] = col_dict.get(old_value, old_value)
+        
+    def __convert_age(self):       
+                 #oce
+        def convert_age(age: int):
+            if age in range(18, 20): 
+                return '18-19'
+            elif age in range(20, 25): 
+                return '20-24'
+            elif age in range(25, 30): 
+                return '25-29'
+            elif age in range(30, 35): 
+                return '30-35'
+            return 'over 35'
+        
+        old_value = self.dic['age_range']
+        if old_value[:2].isnumeric():
+            new_value = int(old_value[:2])
+            new_value = new_value if new_value > 17 else 20
+            new_value = convert_age(int(old_value[:2]))
+        else: 
+            new_value = 'Không yêu cầu'
+        
+        self.dic['age_range'] = new_value
+
+    def __parse_time(self, column_name:str, ): 
+        pass 
+
+    def __encode_location(self):        #oce
+        job_location = self.dic['job_location'].lower()
+        location = None
+        for loc in self.regions: 
+            loc = loc.lower()
+            if loc in job_location: 
+                location = loc
+        if not location: 
+            for k, v in self.location_convert_dict.items():
+                if k in job_location: 
+                    location = v
+                    break 
+            else: 
+                location = 'không xác định'
+        self.dic['location'] = location
+
+    def __encode_column(self, column_name:str): #oce
+        old_value = self.dic[column_name]
+
+        assert len(old_value.split()) != 0, f'Empty {column_name}' 
+
+        self.dic[column_name] = process_text_sentence(old_value, self.tokenizer, self.max_len)        
+        if len(self.dic[column_name].split()) == 0:  
+            self.__warning(column_name)
+
+    def __warning(self, column_name): #oce
+        print(f'The {column_name} field empty at index(s)')
 
 if __name__ == '__main__':
     ## Testing
-    orginal_text = "Hélô  😆"
-    print(orginal_text)
-    print(process_input({"description": orginal_text}, 125))    
+
+    original_input = {'id': 101883361,
+                    'company_id': 24261353,
+                    'title': 'Nhân Viên Tư Vấn Tuyển Sinh',
+                    'post_time': '2022-12-10 00:36:41',
+                    'description': '- Tìm kiếm, xây dựng & phát triển nguồn khách hàng tiềm năng\n- Ghi nhận và tìm hiểu nhu cầu của học viên theo quy trình tư vấn\n- Tư vấn chương trình đào tạo phù hợp\n- Theo dõi tình hình học tập của học viên và thực hiện các dịch vụ chăm sóc học viên\n- Ghi nhận, xử lý và báo cáo với cấp quản lý trực tiếp về các phát sinh liên quan đến học viên/ phụ huynh\n- Thông báo cho học viên và phụ huynh các hoạt động ngoại khóa, hội thảo và thông tin du học nhằm thu hút học viên mới và chăm sóc học viên đang học',
+                    'vacancies': 1,
+                    'min_salary': 8000000,
+                    'max_salary': 10000000,
+                    'age_range': '20-',
+                    'gender': 'Nữ',
+                    'benefits': 'Phụ cấp, tham gia BHXH, tăng lương',
+                    'job_location': 'Xã An Ninh Đông, Huyện Đức Hòa, Long An',
+                    'salary_type': 'Theo tháng',
+                    'region': 'Long An',
+                    'url': 'https://www.vieclamtot.com/viec-lam-huyen-duc-hoa-long-an/101883361.htm',
+                    'created_time': '2023-01-02 15:57:57',
+                    'updated_time': '2023-01-02 15:57:57',
+                    'skills': 'Không yêu cầu',
+                    'job_type': 'Cham soc khach hang',
+                    'contract_type': 'Làm theo ca',
+                    'education_requirements': 'Cấp 3',
+                    'experience_requirements': '< 1 năm',
+                    'website': 'www.vieclamtot.com'}
+
+    # print(process_input({"description": orginal_text}, 125))    
