@@ -1,3 +1,5 @@
+# Refer to https://www.kaggle.com/trnmtin/phobert-classification-for-vietnamese-text
+
 # Refer to https://towardsdatascience.com/how-to-combine-textual-and-numerical-features-for-machine-learning-in-python-dc1526ca94d9
 
 
