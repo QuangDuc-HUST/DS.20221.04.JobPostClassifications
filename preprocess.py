@@ -23,12 +23,12 @@ def process_input(user_input, max_len_text):
 
     assert isinstance(user_input, dict), "Not corrected type."
 
-    assert user_input["description"] is None or user_input["title"] is None, "There is none value in description and title field" # Not input all fields
+    assert user_input["description"] is not None and user_input["title"] is not None, "There is none value in description and title field" 
     
     # Check if other field is None
     is_none_all = True
     for key, value in  user_input.items():
-        if value is not None:
+        if value is not None and key not in ["description", "title"]:
             is_none_all = False
             break
     

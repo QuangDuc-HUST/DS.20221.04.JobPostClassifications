@@ -90,7 +90,7 @@ if __name__ == '__main__':
                     'website': 'www.vieclamtot.com'}
 
 
-    output = predict(test_input, 'weights/', "config.json")
+    output = predict(test_input_2, 'weights/', "config.json")
 
     idx2label = utils.get_idx2label()
 

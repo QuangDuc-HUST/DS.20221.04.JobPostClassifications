@@ -72,9 +72,6 @@ class ComPhoBERTModel(nn.Module):
 
         concat_layer = torch.concat([dense_out, x_num], dim=1)
 
-        print(concat_layer.shape)
-
-
         out = self.fc_2(concat_layer)
 
         return out
