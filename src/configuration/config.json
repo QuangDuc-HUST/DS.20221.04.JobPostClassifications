@@ -1,0 +1,17 @@
+{
+    "postgres": {
+        "user": "postgres",
+        "password": "postgres",
+        "host": "database-ds.cekjcsqlwwiv.ap-northeast-1.rds.amazonaws.com",
+        "port": 5432,
+        "database": "JOBS"
+    },
+    "airtable": {
+        "api":"keyC0G5NLjL4qXKLJ",
+        "base_id":"appoGSNO1FZ8XvKT8",
+        "job_table": "job",
+        "company_table":"company"
+    },
+    "virtual_env_dir": "/opt/env/bin/activate"
+
+}

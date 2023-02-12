@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- <link rel="shortcut icon" href="#"> -->
+    <link rel="stylesheet" type="text/css" href="static/css/main.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <title>Job Classification</title> 
+</head>
+<body>
+
+<!-- <p>Click on the "Choose File" button to upload a file:</p>
+<input  id="file" type="file" onchange="selectVideo(this);"> -->
+<div>
+    <br>
+    <!-- <div style="float: left;width: 2.5%;padding: 15px;"></div>
+    
+    <div style="float: left;width: 2.5%;padding: 15px;"></div> -->
+        <!-- <div id="nega">
+            <img src="static/img/nigga.png" alt="nigga 2 thumbs up" width="200" >
+            <p>Author</p>
+        </div> -->
+        <form method="POST" action="/predict" id="myForm" enctype="multipart/form-data">
+            
+            <div style="text-align: center;">
+                <p>Enter information of a job here: </p>
+                <table style="border-spacing: 5px; ;border: 1px solid black;padding: 5px; margin: 0 auto;">
+                    <tr>
+                        <th style="text-align: center;border: 1px solid black;padding: 5px;">Age Range</th>
+                        <th style="text-align: center;border: 1px solid black;padding: 5px;">Contract Type</th>
+                        <th style="text-align: center;border: 1px solid black;padding: 5px;">Education Requirement</th>
+                        <th style="text-align: center;border: 1px solid black;padding: 5px;">Experience Requirement</th>
+                        <th style="text-align: center;border: 1px solid black;padding: 5px;">Salary Type</th>
+                        <th style="text-align: center;border: 1px solid black;padding: 5px;">Gender</th>
+                        <th style="text-align: center;border: 1px solid black;padding: 5px;">Description</th>
+                        <th style="text-align: center;border: 1px solid black;padding: 5px;">Title</th>
+                        <th style="text-align: center;border: 1px solid black;padding: 5px;">Min Salary</th>
+                        <th style="text-align: center;border: 1px solid black;padding: 5px;">Max Salary</th>
+                        <th style="text-align: center;border: 1px solid black;padding: 5px;">Benefits</th>
+                        <th style="text-align: center;border: 1px solid black;padding: 5px;">Job Location</th>
+                        <th style="text-align: center;border: 1px solid black;padding: 5px;">Skills</th>
+                        <th style="text-align: center;border: 1px solid black;padding: 5px;">Vacancies</th>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0 15px;">
+                            <select id="age_range_dropdown" name="age_range" form="myForm">
+                                <option></option>
+                                {% for ar in constants.AGE_RANGE  %}
+                                <option value="{{ ar }}">{{ ar }}</option>
+                                {% endfor %}
+                                
+                            </select>
+                        </td>
+                        <td style="padding: 0 15px;">
+                            <select id="contract_type_dropdown" name="contract_type" form="myForm">
+                                <option></option>
+                                {% for ct in constants.CONTRACT_TYPE  %}
+                                <option value="{{ ct }}">{{ ct }}</option>
+                                {% endfor %}
+                                
+                            </select>
+                        </td>
+                        <td style="padding: 0 15px;">
+                            <select id="education_dropdown" name="education_requirements" form="myForm">
+                                <option></option>
+                                {% for edu in constants.EDUCATION  %}
+                                <option value="{{ edu }}">{{ edu }}</option>
+                                {% endfor %}
+                                
+                            </select>
+                        </td>
+                        <td style="padding: 0 15px;">
+                            <select id="experience_dropdown" name="experience_requirements" form="myForm">
+                                <option></option>
+                                {% for exp in constants.EXPERIENCE  %}
+                                <option value="{{ exp }}">{{ exp }}</option>
+                                {% endfor %}
+                                
+                            </select>
+                        </td>
+                        <td style="padding: 0 15px;">
+                            <select id="salary_type_dropdown" name="salary_type" form="myForm">
+                                <option></option>
+                                {% for st in constants.SALARY_TYPE  %}
+                                <option value="{{ st }}">{{ st }}</option>
+                                {% endfor %}
+                                
+                            </select>
+                        </td>
+                        <td style="padding: 0 15px;">
+                            <select id="gender_dropdown" name="gender" form="myForm">
+                                <option></option>
+                                {% for g in constants.GENDER  %}
+                                <option value="{{ g }}">{{ g }}</option>
+                                {% endfor %}
+                                
+                            </select>
+                        </td>
+                        <td style="padding: 0 15px;">
+                            <input id="description" name="description" type="text" form="myForm" style="margin: auto;">
+                        </td>
+                        <td style="padding: 0 15px;">
+                            <input id="title" name="title" type="text" form="myForm" style="margin: auto;">
+                        </td>
+                        <td style="padding: 0 15px;">
+                            <input id="min_salary" name="min_salary" type="text" form="myForm" style="margin: auto;">
+                        </td>
+                        <td style="padding: 0 15px;">
+                            <input id="max_salary" name="max_salary" type="text" form="myForm" style="margin: auto;">
+                        </td>
+                        <td style="padding: 0 15px;">
+                            <input id="benefits" name="benefits" type="text" form="myForm" style="margin: auto;">
+                        </td>
+                        <td style="padding: 0 15px;">
+                            <input id="job_location" name="job_location" type="text" form="myForm" style="margin: auto;">
+                        </td>
+                        <td style="padding: 0 15px;">
+                            <input id="skills" name="skills" type="text" form="myForm" style="margin: auto;">
+                        </td>
+                        <td style="padding: 0 15px;">
+                            <input id="vacancies" name="vacancies" type="text" form="myForm" style="margin: auto;">
+                        </td>
+                    </tr>
+
+                </table>
+                <a href="/predict_result">
+                    <br>
+                    <input type="submit"/>
+                </a>
+            </div>
+
+        </form>
+        <br>
+        <!-- <p style="font-weight:bold"> Your description: </p>
+        <p>{{ des }}</p> -->
+        <table id="result">
+            <tr>
+                {% for header in heading %}
+                <th style="text-align: center;"> {{ header }} </th>
+                {% endfor %}
+            </tr>
+
+            {% for lb, s in res %}
+                <tr>
+                    <td> {{ lb }} </td>
+                    <td style="align-items: center; padding: 0px; width: 200px;">
+                        <!-- <div class="progress-bar" role="progressbar" aria-valuenow="{{s}}"
+                        aria-valuemin="0" aria-valuemax="100">
+                        {{s}} %
+                        </div> -->
+                        <div id="myturn">
+                            <span data-value="60" style="width: 60%;">{{s}}%</span>
+                            <progress value="{{s}}" max="100"></progress>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+
+        </table>
+    </div>
+
+    
+</div>
+
+</body>
+</html>
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+<script>
+</script>
