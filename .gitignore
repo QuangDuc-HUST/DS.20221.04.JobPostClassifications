@@ -135,6 +135,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 *.mp4
-*.json
-*.txt
 wandb

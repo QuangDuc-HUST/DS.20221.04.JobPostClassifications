@@ -1,35 +1,10 @@
 import os
 import json
-import shutil
 
 from sklearn.metrics import f1_score, confusion_matrix
 
 import torch
 
-
-
-class RunningAverage():
-
-    """A simple class that maintains the running average of a quantity
-    Example:
-    ```
-    loss_avg = RunningAverage()
-    loss_avg.update(2)
-    loss_avg.update(4)
-    loss_avg() = 3
-    ```
-    """
-
-    def __init__(self):
-        self.steps = 0
-        self.total = 0
-
-    def update(self, val):
-        self.total += val
-        self.steps += 1
-
-    def __call__(self):
-        return self.total / float(self.steps)
 
 def get_training_device(display=True):
     """Get the training device
@@ -82,34 +57,6 @@ def get_eval_metrics(preds_label, targets):
     print('-' * 20)
 
     return f1_result, cfm_result
-    
-def save_dict_to_json(d, json_path):
-
-    with open(json_path, 'w') as f:
-        d = {k: float(v) for k, v in d.items()}
-        json.dump(d, f, indent=4)
-
-
-def save_checkpoint(state, is_best, checkpoint):
-    """Saves model and training parameters at checkpoint + 'last.pth'. If is_best==True, also saves
-    checkpoint + 'best.pth'
-    Args:
-        state: (dict) contains model's state_dict, may contain other keys such as epoch, optimizer state_dict
-            (epoch, state_dict, optimizer)
-        is_best: (bool) True if it is the best model seen till now
-        checkpoint: (string) folder where parameters are to be saved
-    """
-    file_path = os.path.join(checkpoint, 'last.pth')
-
-    if not os.path.exists(checkpoint):
-        print("Checkpoint Directory does not exist! Making directory {}".format(checkpoint))
-        os.makedirs(checkpoint)
-
-    print(f"Saving checkpoint...")
-    torch.save(state, file_path)
-
-    if is_best:
-        shutil.copyfile(file_path, os.path.join(checkpoint, 'best.pth'))
 
 
 def load_checkpoint(checkpoint, model, optimizer=None, **kwargs):
@@ -136,7 +83,8 @@ def load_checkpoint(checkpoint, model, optimizer=None, **kwargs):
     return checkpoint
 
 
-def get_idx2label(json_file_path="idx2label.json"):
+
+def get_idx2label(json_file_path=os.path.join("idx2label", "job_type_idx2label.json")):
 
     with open(json_file_path) as f:
         idx2label = json.load(f)
