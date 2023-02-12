@@ -1,6 +1,0 @@
-scrapy
-urllib3
-w3lib
-# psycopg2-binary
-pyairtable
-airtable
