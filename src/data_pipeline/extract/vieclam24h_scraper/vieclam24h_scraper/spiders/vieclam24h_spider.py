@@ -3,7 +3,7 @@ from utils.utils import *
 
 
 class Vieclam24hSpider(scrapy.Spider):
-    
+
     name = 'vieclam24h'
     configure_logging(install_root_handler=False, )
     logging.basicConfig(
@@ -22,13 +22,13 @@ class Vieclam24hSpider(scrapy.Spider):
         super().__init__(**kwargs)
 
     def start_requests(self):
-        for t in range(1, 36): 
+        for t in range(1, 36):
 
             r = requests.get("https://vieclam24h.vn/tim-kiem-viec-lam-nhanh?occupation_ids[]=" + str(t))
-            soup = BeautifulSoup(r.content, "html.parser")  
-            dom = etree.HTML(str(soup)) 
+            soup = BeautifulSoup(r.content, "html.parser")
+            dom = etree.HTML(str(soup))
             pages = dom.xpath('//*[@id="__next"]/div/main/div/div/div/div[1]/div[1]/div/div[1]/span')[0].text
-            self.end_page = int(pages.replace(',', ''))//30 + 2
+            self.end_page = int(pages.replace(',', '')) // 30 + 2
 
             print(self.end_page)
 
@@ -50,10 +50,9 @@ class Vieclam24hSpider(scrapy.Spider):
 
             link = self.preprocess(link)
             yield scrapy.Request(link, callback=self._get_javascript_data, meta=response.meta)
-            
+
     def _get_javascript_data(self, response):
 
-        
         data = {}
         for script in response.xpath("//script").getall():
             if '<script type="application/ld+json">' in str(script):
@@ -62,12 +61,12 @@ class Vieclam24hSpider(scrapy.Spider):
             if '<script id="__NEXT_DATA__" type="application/json">' in str(script):
                 data = json.loads(script.split('<script id="__NEXT_DATA__" type="application/json">')[1].split('</script>')[0])
                 break
-            
+
         if self.parameters == []:
             # f = json.load(open('./error/error.json', 'r'))
             # f.append({'url': response.url, 'job_type_id': response.meta['job_type_id']})
             # json.dump(f, open('./error/error.json', 'w'))
-            return 
+            return
 
         self.job_detail = data["props"]["initialState"]['api']['jobDetailHiddenContact']['data']
         self.employer_detail = data["props"]["initialState"]['api']['employerDetailHiddenContact']['data']
@@ -129,4 +128,3 @@ class Vieclam24hSpider(scrapy.Spider):
             print(traceback.format_exc())
 
         return item24h.load_item()
-        

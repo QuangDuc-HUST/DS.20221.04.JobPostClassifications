@@ -16,7 +16,6 @@ from data_pipeline.transform.processing.transform_new import *
 from data_pipeline.transform.processing.transformed_item import *
 
 
-
 class DuplicatesPipeline:
 
     def __init__(self):
@@ -39,7 +38,6 @@ class Vieclam24HScraperLoadPipeline:
 
         self.job = dict()
 
-
     def process_item(self, item, spider):
         # print(dict(item))
 
@@ -51,7 +49,7 @@ class Vieclam24HScraperLoadPipeline:
             self.job[post_year] = []
 
         self.job[post_year].append(dict(item))
-    
+
     def close_spider(self, spider):
         for k in self.job.keys():
             json.dump(self.job[k], open(f'./../../transform/staging/staging_vieclam24h_{k}.json', 'w'))
@@ -81,7 +79,7 @@ class Vieclam24HScraperPreprocessPipeline:
             # print('------------ Saved Metadata ----------------')
 
         return self.process_job_item(item)
-        
+
     def process_job_item(self, item):
 
         item = ItemAdapter(item)
@@ -107,7 +105,7 @@ class Vieclam24HScraperPreprocessPipeline:
         except Exception as e:
             print(e)
             item['experience_requirements'] = ''
-        
+
         try:
             item['contract_type'] = self.working_method[int(item['contract_type']) - 1]
         except Exception as e:
@@ -168,7 +166,3 @@ class Vieclam24HScraperPreprocessPipeline:
         provinces = sorted(self.metadata['provinces'], key=lambda x: x['id'])
 
         self.provinces = {i['id']: i['name'] for i in provinces}
-
-
-
-        

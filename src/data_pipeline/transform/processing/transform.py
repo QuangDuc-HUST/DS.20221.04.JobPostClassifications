@@ -22,12 +22,10 @@ def transform_vl24h(transform_company, transform_job):
 
             transform_company.append(temp_item)
 
-
         except Exception as e:
             print("Viec Lam 24h: Transfrom error!")
             print(traceback.format_exc())
 
-        
         try:
             temp_item = copy.deepcopy(vl24h[i])
             temp_item['company_id'] = temp_item.pop('company_id')
@@ -50,10 +48,10 @@ def transform_vl24h(transform_company, transform_job):
             transform_job.append(temp_item)
             # if t == 1:
             #     k = sorted(temp_item.keys())
-                  
+
         except Exception as e:
             print(traceback.format_exc())
-        
+
     # transform_file = open('./data/company.json', 'w')
     # json.dump(transform_company, transform_file, indent=4)
 
@@ -108,7 +106,7 @@ def transform_vlt(transform_company, transform_job):
             temp_item['age_range'] = temp_item.pop('min_age') + '-' + temp_item.pop('max_age')
             if re.match('\d+, .+', temp_item['age_range']) is None:
                 temp_item['age_range'] = re.findall('\d+', temp_item['age_range'])[0] + '+'
-            
+
             if re.match('.+, \d+', temp_item['age_range']) is None:
                 temp_item['age_range'] = re.findall('\d+', temp_item['age_range'])[0] + '-'
 
@@ -128,6 +126,7 @@ def transform_vlt(transform_company, transform_job):
 
     return transform_company, transform_job
 
+
 def transform_data():
 
     transform_company = []
@@ -142,4 +141,6 @@ def transform_data():
     transform_file = open('../load/data/job_vlt_2021.json', 'w')
     json.dump(transform_job, transform_file, indent=4)
 
-transform_data()
+
+if __name__ == "__main__":
+    transform_data()

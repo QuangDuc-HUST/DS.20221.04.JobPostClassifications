@@ -2,10 +2,10 @@ import json
 import os
 
 
-
 __location__ = os.path.realpath(
-os.path.join(os.getcwd(), os.path.dirname(__file__)))
+    os.path.join(os.getcwd(), os.path.dirname(__file__)))
 print(__location__)
+
 
 class Config:
     def __init__(self, file_path=os.path.join(__location__, 'config.json')):

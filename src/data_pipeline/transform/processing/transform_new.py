@@ -36,11 +36,9 @@ def transform_vlt_job(item):
         item['age_range'] = item.pop('min_age') + '-' + item.pop('max_age')
         if re.match('\d+, .+', item['age_range']) is None:
             item['age_range'] = re.findall('\d+', item['age_range'])[0] + '+'
-        
+
         if re.match('.+, \d+', item['age_range']) is None:
             item['age_range'] = re.findall('\d+', item['age_range'])[0] + '-'
-
-        
 
         item['coordinate'] = item.pop('location').replace(',', ', ') if item['location'] != '0,0' else ''
         item['region'] = item['city'].replace("Tp H\u1ed3 Ch\u00ed Minh", 'TP.HCM').replace('Tp Hồ Chí Minh', 'TP.HCM')
@@ -59,6 +57,7 @@ def transform_vlt_job(item):
 
     except Exception as e:
         print(traceback.format_exc())
+
 
 def transform_vl24h(item):
 

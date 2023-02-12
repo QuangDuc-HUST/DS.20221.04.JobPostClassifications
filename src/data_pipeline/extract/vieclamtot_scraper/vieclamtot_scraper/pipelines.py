@@ -23,10 +23,8 @@ class VieclamtotScraperLoadPipeline:
 
         self.job = dict()
 
-
     def process_item(self, item, spider):
         # print(dict(item))
-
         post_time = dict(item)['post_time']
         post_year = datetime.strptime(post_time, '%Y-%m-%d %H:%M:%S').year
         print(post_year)
@@ -35,7 +33,7 @@ class VieclamtotScraperLoadPipeline:
             self.job[post_year] = []
 
         self.job[post_year].append(dict(item))
-    
+
     def close_spider(self, spider):
         for k in self.job.keys():
             json.dump(self.job[k], open(f'./../../transform/staging/staging_vieclamtot_{k}.json', 'w'))
@@ -71,7 +69,7 @@ class VieclamtotScraperPreprocessPipeline:
         # print('---------- Closed Main Pipeline ----------')
 
     def process_item(self, item, spider):
-        
+
         return self.process_job_item(item)
 
     def process_job_item(self, item):
@@ -80,7 +78,7 @@ class VieclamtotScraperPreprocessPipeline:
 
         # if re.match('\d+, .+', item['age_range']) is None:
         #     item['age_range'] = re.findall('\d+', item['age_range'])[0] + '+'
-        
+
         # if re.match('.+, \d+', item['age_range']) is None:
         #     item['age_range'] = re.findall('\d+', item['age_range'])[0] + '-'
 
@@ -111,7 +109,7 @@ class DuplicatesPipeline:
     def open_spider(self, spider):
         # print('---------- Opening Duplicate Pipeline ----------')
         pass
-    
+
     def close_spider(self, spider):
         # print('---------- Closing Dupilicate Pipeline ----------')
         pass

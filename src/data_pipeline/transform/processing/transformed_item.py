@@ -32,8 +32,6 @@ class TransformedScraperJobItem(scrapy.Item):
     company_region = scrapy.Field()
     company_coordinate = scrapy.Field()
     company_address = scrapy.Field()
-    
 
     def __str__(self):
         return ""
-

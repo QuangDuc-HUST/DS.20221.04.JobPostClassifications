@@ -130,7 +130,7 @@ class Vieclam24HScraperItem(scrapy.Item):
         input_processor=MapCompose(),
         output_processor=TakeFirst1()
     )
-    
+
     company_name = scrapy.Field(
         input_processor=MapCompose(),
         output_processor=TakeFirst1()
@@ -153,8 +153,3 @@ class Vieclam24HScraperItem(scrapy.Item):
 
     def __str__(self):
         return ""
-
-
-    
-
-

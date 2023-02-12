@@ -16,7 +16,7 @@ def process_num(num):
     try:
         return int(num)
     except Exception as e:
-        return 0  
+        return 0
 
 
 class TakeFirst1:
@@ -154,6 +154,3 @@ class VieclamtotJobScraperItem(scrapy.Item):
 
     def __str__(self):
         return ""
-
-
-

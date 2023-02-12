@@ -15,11 +15,11 @@ class VieclamtotlinksSpider(scrapy.Spider):
         datefmt="%F %A %T",
         level=logging.INFO
     )
-    
+
     def __init__(self, end_page='250', **kwargs):
 
         self.found = True
-        self.url = "https://www.vieclamtot.com/viec-lam" 
+        self.url = "https://www.vieclamtot.com/viec-lam"
         self.end_page = int(end_page)
 
         super().__init__(**kwargs)
@@ -31,15 +31,14 @@ class VieclamtotlinksSpider(scrapy.Spider):
 
     def start_requests(self):
 
-        for t in self.get_id_list(): 
+        for t in self.get_id_list():
             for p in range(self.end_page):
                 yield scrapy.Request(self.url + "-" + t + "?&page=" + str(p) + "&sp=0", callback=self.parse_links, meta={
                     "download_timeout": 10,
                     "max_retry_time": 1,
-                    'id': int(t[t.find('sdjt') + 4 : ])
+                    'id': int(t[t.find('sdjt') + 4:])
                 })
 
-            
             self.found = True
 
         # with open('../vieclamtot_scraper/self.data/sample_{}_page.json'.format(self.end_page), 'w') as file:
@@ -60,7 +59,7 @@ class VieclamtotlinksSpider(scrapy.Spider):
         links = response.xpath('//a[contains(@class, "AdItem_adItem")]/@href').getall()
 
         # print(links)
-        
+
         for link in links:
             # filter for priorities which might be posted long time ago
             if '[PL-top]' not in link:
@@ -77,14 +76,14 @@ class VieclamtotlinksSpider(scrapy.Spider):
                 break
         self.data = all_data["props"]["initialState"]["adView"]["adInfo"]["ad"]
         self.parameters = all_data["props"]["initialState"]["adView"]["adInfo"]["ad_params"]
-        
+
         yield self.parse_job(response)
 
     def parse_job(self, response):
         try:
             # print(response)
             itemvlt = ItemLoader(item=VieclamtotJobScraperItem())
-            
+
             itemvlt.add_value('id', self.data['list_id'])
             itemvlt.add_value("job_id", self.data["job_type"])
             itemvlt.add_value("post_time", self.data["list_time"])
@@ -113,12 +112,11 @@ class VieclamtotlinksSpider(scrapy.Spider):
             itemvlt.add_value('created_time', now)
             itemvlt.add_value('updated_time', now)
 
-        
         except Exception as e:
             with open('./error/error_job_url_{}.txt'.format(str(int(time.mktime(date.today().timetuple())))), 'a') as f:
                 f.write(str(response.url) + ', ' + str(e) + '\n')
                 f.close()
-        
+
         try:
 
             itemvlt.add_value("company_id", self.data['account_id'])
@@ -134,4 +132,3 @@ class VieclamtotlinksSpider(scrapy.Spider):
                 f.close()
 
         return itemvlt.load_item()
-

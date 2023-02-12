@@ -9,5 +9,6 @@ from scrapy.loader import ItemLoader
 import logging
 from scrapy.utils.log import configure_logging
 
+
 def preprocess(self, link):
-        return urljoin(self.url, link)
+    return urljoin(self.url, link)

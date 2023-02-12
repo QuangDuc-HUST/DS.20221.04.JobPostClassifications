@@ -12,5 +12,6 @@ import requests
 from bs4 import BeautifulSoup
 from lxml import etree
 
+
 def preprocess(self, link):
-        return urljoin(self.url, link)
+    return urljoin(self.url, link)
