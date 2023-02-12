@@ -1,4 +1,4 @@
-# Introduction to Data Science: Group 04 
+# Introduction to Data Science Project - Group 04 
 
 ## This branch is dedicated for the modeling and evaluation notebooks 
 
