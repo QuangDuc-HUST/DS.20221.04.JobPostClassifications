@@ -16,6 +16,7 @@ def get_training_device(display=True):
 
     return device
 
+
 def to_device(vari, device, **kwargs):
     """
     Get the variable to device even if this is a collection of tensor
@@ -23,29 +24,28 @@ def to_device(vari, device, **kwargs):
 
     if isinstance(vari, dict):
         for key in vari.keys():
-            vari[key] = vari[key].to(device, **kwargs)   
+            vari[key] = vari[key].to(device, **kwargs)
         return vari
 
     elif isinstance(vari, list):
         new_vari = []
         for ten in vari:
-          new_vari.append(ten.to(device, **kwargs))
-        
+            new_vari.append(ten.to(device, **kwargs))
+
         return new_vari
 
     return vari.to(device, **kwargs)
 
 
-
-def get_eval_metrics(preds_label, targets):  
+def get_eval_metrics(preds_label, targets):
 
     """Get F1 Score and Confusion Matrix
-    
-    return and display (f1_score, confusion_matrix_numpy) 
+
+    return and display (f1_score, confusion_matrix_numpy)
 
     """
 
-    f1_result =  f1_score(targets, preds_label, average='macro')
+    f1_result = f1_score(targets, preds_label, average='macro')
 
     cfm_result = confusion_matrix(targets, preds_label)
 
@@ -81,7 +81,6 @@ def load_checkpoint(checkpoint, model, optimizer=None, **kwargs):
         optimizer.load_state_dict(checkpoint['optim_dict'])
 
     return checkpoint
-
 
 
 def get_idx2label(json_file_path=os.path.join("idx2label", "job_type_idx2label.json")):

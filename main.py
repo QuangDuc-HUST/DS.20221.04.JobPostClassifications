@@ -5,8 +5,6 @@ from src.app.core.api import api
 from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI
 
-
-
 # Declaring our FastAPI instance
 app = FastAPI()
 
