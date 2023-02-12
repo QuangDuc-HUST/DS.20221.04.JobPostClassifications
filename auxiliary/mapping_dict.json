@@ -1,0 +1,100 @@
+
+{
+	"CONTRACT_TYPE_DICT": {
+		"Toàn thời gian cố định": "Fulltime",
+		"Bán thời gian": "Parttime", 
+		"Toàn thời gian": "Fulltime", 
+		"Khác": "Other",
+		"Làm theo ca": "Shift_work",
+		"Thời vụ": "Fulltime",
+		"Toàn thời gian tạm thời": "Fulltime",
+		"Bán thời gian cố định": "Parttime",
+		"Bán thời gian tạm thời": "Parttime", 
+		"Theo hợp đồng tư vấn": "Other",
+		"Theo sản phẩm/làm tại nhà": "Other", 
+		"Thực tập/ Dự án":"Other",
+		"Thực tập": "Other"
+	}, 
+
+	"GENDER_CONVERTER": {
+		"Không yêu cầu": "Both",
+		"Nam": "Male",
+		"Nữ":"Female"
+	}, 
+
+	"SALARY_TYPE_CONVERTER": {
+		"Theo tháng": "monthly",
+		"month": "monthly",
+		"Theo ngày": "daily",
+		"Theo giờ": "hourly",
+		"Lương khoán": "by constract"
+	}, 
+	
+	"EDUCATION_REQUIREMENTS_CONVERTER": {
+		"Cấp 1": "Khác", 
+		"Cấp 2": "Trung học", 
+		"Cấp 3": "Trung học", 
+		"Trung cấp/Nghề": "Trung cấp", 
+		"Chứng chỉ": "Khác"
+	}, 
+	
+	"EXPERIENCE_REQUIREMENTS_CONVERTER": {
+		"> 10 năm": "Hơn 3 năm",
+		"< 1 năm": "Dưới 1 năm",
+		"1-2 năm": "1 năm",
+		"3-5 năm": "Hơn 3 năm",
+		"Hơn 5 năm": "Hơn 3 năm",
+		"5 năm": "Hơn 3 năm",
+		"4 năm": "Hơn 3 năm",
+		"6-10 năm": "Hơn 3 năm"
+	}, 
+	"LOCATION_CONVERTER": {
+		"ho chi minh": "tp hồ chí minh",
+        "hồ chí minh": "tp hồ chí minh", 
+        "hcm": "tp hồ chí minh", 
+        "tp hồ chí minh": "tp hồ chí minh", 
+        "hanoi": "hà nội", 
+        "ha noi": "hà nội", 
+        "hà nội": "hà nội", 
+        "hn": "hà nội"
+	}, 
+	"regions": 
+	[
+		"tp hồ chí minh", 
+		"hà nội", "bình dương", "đà nẵng",
+		"đồng nai", "long an",
+		"cần thơ", "bà rịa - vũng tàu",
+		"lâm đồng", "đắk lắk",
+		"tây ninh", "hải phòng",
+		"bắc ninh", "bình phước",
+		"tiền giang", "khánh hòa",
+		"kiên giang", "hưng yên",
+		"an giang", "bến tre",
+		"quảng nam", "vĩnh long",
+		"thừa thiên huế", "đồng tháp",
+		"sóc trăng", "nghệ an",
+		"bình thuận", "vĩnh phúc",
+		"bình định", "bắc giang",
+		"hải dương", "hậu giang",
+		"gia lai", "thanh hóa",
+		"hà nam", "trà vinh",	
+		"quảng ngãi", "quảng ninh", "phú thọ",
+		"bạc liêu",	"quảng bình",
+		"thái bình", "cà mau",
+		"hà tĩnh", "đắk nông",
+		"ninh thuận", "nam định",
+		"ninh bình", "kon tum",	"phú yên",
+		"lạng sơn", "tuyên quang", "thái nguyên", 
+		"quảng trị", "lào cai", "hòa bình",
+		"nước ngoài", "cao bằng",
+		"lai châu", "hà giang",
+		"yên bái", "điện biên",
+		"bắc kạn", "sơn la"
+	], 
+	"min_salary_lmbda": -0.24173361880797134, 
+	"max_salary_lmbda": -0.4314268927252427, 
+	"vacancies_lmbda": -0.35680001023864216, 
+	"mean_min_salary": 7686000, 
+	"mean_max_salary": 14741000 
+
+}
